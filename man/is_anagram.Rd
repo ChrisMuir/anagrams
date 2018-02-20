@@ -4,7 +4,7 @@
 \alias{is_anagram}
 \title{Check for Anagrams}
 \usage{
-is_anagram(string, terms, any_len = FALSE)
+is_anagram(string, terms, any_len = FALSE, ignore_spaces = FALSE)
 }
 \arguments{
 \item{string}{Char string.}
@@ -13,7 +13,10 @@ is_anagram(string, terms, any_len = FALSE)
 
 \item{any_len}{Logical, should the function be looking for anagrams that
 are any length, or be restricted to anagrams that are the same length as
-input arg \code{string}.}
+input arg \code{string}. Default value is FALSE.}
+
+\item{ignore_spaces, }{logical, should spaces within input arg \code{string}
+be ignored when searching for anagrams. Default value is FALSE.}
 }
 \value{
 Logical vector, with length equal to that of \code{terms}.
@@ -26,5 +29,6 @@ character vector, check if input string is an anagram of the given element.
 str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 is_anagram("cats", str_to_check)
 is_anagram("cats", str_to_check, any_len = TRUE)
+is_anagram("c a t s", str_to_check, ignore_spaces = TRUE)
 
 }
