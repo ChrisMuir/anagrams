@@ -27,7 +27,7 @@ library(anagrams)
 is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
 #> [1] FALSE  TRUE FALSE  TRUE FALSE
 
-# Test for anagrams that are any length (either same length or sub-strings).
+# Set arg "any_len" to TRUE to test for anagrams that are any length (either same length or sub-string).
 is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"), any_len = TRUE)
 #> [1]  TRUE  TRUE FALSE  TRUE FALSE
 ```
