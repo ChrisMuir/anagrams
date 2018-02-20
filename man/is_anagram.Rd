@@ -4,7 +4,8 @@
 \alias{is_anagram}
 \title{Check for Anagrams}
 \usage{
-is_anagram(string, terms, any_len = FALSE, ignore_spaces = FALSE)
+is_anagram(string, terms, any_len = FALSE, ignore_spaces = FALSE,
+  ignore_case = FALSE)
 }
 \arguments{
 \item{string}{Char string.}
@@ -15,8 +16,11 @@ is_anagram(string, terms, any_len = FALSE, ignore_spaces = FALSE)
 are any length, or be restricted to anagrams that are the same length as
 input arg \code{string}. Default value is FALSE.}
 
-\item{ignore_spaces, }{logical, should spaces within input arg \code{string}
-be ignored when searching for anagrams. Default value is FALSE.}
+\item{ignore_spaces}{logical, should spaces be ignored when searching for
+anagrams. Default value is FALSE.}
+
+\item{ignore_case}{logical, should case (lower/upper) be ignored when
+searching for anagrams. Default value is FALSE.}
 }
 \value{
 Logical vector, with length equal to that of \code{terms}.
@@ -30,5 +34,6 @@ str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 is_anagram("cats", str_to_check)
 is_anagram("cats", str_to_check, any_len = TRUE)
 is_anagram("c a t s", str_to_check, ignore_spaces = TRUE)
+is_anagram("CATs", str_to_check, ignore_case = TRUE)
 
 }
