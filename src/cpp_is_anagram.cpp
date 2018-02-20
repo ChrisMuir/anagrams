@@ -1,22 +1,8 @@
 #include <Rcpp.h>
-#include"anagrams_header.h"
 using namespace Rcpp;
 
 
-//[[Rcpp::export]]
-LogicalVector cpp_is_anagram(std::string x, std::vector<std::string> terms,
-                             bool any_len) {
-  // If "any_len" is true, return output from cpp_is_anagram_any_len,
-  // otherwise return output from cpp_is_anagram_same_len.
-  if(any_len) {
-    return cpp_is_anagram_any_len(x, terms);
-  } else {
-    return cpp_is_anagram_same_len(x, terms);
-  }
-}
-
-
-//[[Rcpp::export]]
+// Check for anagram sub-strings.
 LogicalVector cpp_is_anagram_any_len(std::string x,
                                      std::vector<std::string> terms) {
   int terms_len = terms.size();
@@ -62,7 +48,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
 }
 
 
-//[[Rcpp::export]]
+// Check for anagrams that are the same length as input arg x.
 LogicalVector cpp_is_anagram_same_len(std::string x,
                                       std::vector<std::string> terms) {
   int terms_len = terms.size();
@@ -97,4 +83,20 @@ LogicalVector cpp_is_anagram_same_len(std::string x,
     out[i] = x == terms_iter;
   }
   return out;
+}
+
+
+// Exported function, passes input args "X" and "terms" to one of the two
+// anagram finding functions, depending on whether arg "any_len" is TRUE or
+// FALSE.
+//[[Rcpp::export]]
+LogicalVector cpp_is_anagram(std::string x, std::vector<std::string> terms,
+                             bool any_len) {
+  // If "any_len" is true, return output from cpp_is_anagram_any_len,
+  // otherwise return output from cpp_is_anagram_same_len.
+  if(any_len) {
+    return cpp_is_anagram_any_len(x, terms);
+  } else {
+    return cpp_is_anagram_same_len(x, terms);
+  }
 }

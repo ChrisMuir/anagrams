@@ -5,11 +5,3 @@ cpp_is_anagram <- function(x, terms, any_len) {
     .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', x, terms, any_len)
 }
 
-cpp_is_anagram_any_len <- function(x, terms) {
-    .Call('_anagrams_cpp_is_anagram_any_len', PACKAGE = 'anagrams', x, terms)
-}
-
-cpp_is_anagram_same_len <- function(x, terms) {
-    .Call('_anagrams_cpp_is_anagram_same_len', PACKAGE = 'anagrams', x, terms)
-}
-

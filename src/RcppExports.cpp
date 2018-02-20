@@ -18,35 +18,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_is_anagram_any_len
-LogicalVector cpp_is_anagram_any_len(std::string x, std::vector<std::string> terms);
-RcppExport SEXP _anagrams_cpp_is_anagram_any_len(SEXP xSEXP, SEXP termsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::string> >::type terms(termsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_is_anagram_any_len(x, terms));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_is_anagram_same_len
-LogicalVector cpp_is_anagram_same_len(std::string x, std::vector<std::string> terms);
-RcppExport SEXP _anagrams_cpp_is_anagram_same_len(SEXP xSEXP, SEXP termsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::string> >::type terms(termsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_is_anagram_same_len(x, terms));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_anagrams_cpp_is_anagram", (DL_FUNC) &_anagrams_cpp_is_anagram, 3},
-    {"_anagrams_cpp_is_anagram_any_len", (DL_FUNC) &_anagrams_cpp_is_anagram_any_len, 2},
-    {"_anagrams_cpp_is_anagram_same_len", (DL_FUNC) &_anagrams_cpp_is_anagram_same_len, 2},
     {NULL, NULL, 0}
 };
 
