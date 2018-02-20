@@ -36,7 +36,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
       char x_char_curr = x[x_char];
       int char_match = terms_iter.find_first_of(x_char_curr);
       if(char_match != -1) {
-        terms_iter = terms_iter.erase(char_match, 1);
+        terms_iter.erase(char_match, 1);
       } else {
         anagram = false;
         break;
