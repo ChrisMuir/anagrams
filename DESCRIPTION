@@ -1,0 +1,14 @@
+Package: anagrams
+Title: Find Anagrams Among Character Vectors
+Version: 0.0.1.9000
+Authors@R: person("Chris", "Muir", email = "chrismuirRVA@gmail.com", role = c("aut", "cre"))
+Description: Just a demo package for testing whether anagrams exist among input strings. Vectorized functions built in both base R and using C++/Rcpp, to compare speeds.
+Depends: R (>= 3.0.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/ChrisMuir/anagrams
+BugReports: https://github.com/ChrisMuir/anagrams/issues
+LinkingTo: Rcpp
+Imports: Rcpp
+RoxygenNote: 6.0.1
