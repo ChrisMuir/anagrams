@@ -12,3 +12,4 @@ BugReports: https://github.com/ChrisMuir/anagrams/issues
 LinkingTo: Rcpp
 Imports: Rcpp
 RoxygenNote: 6.0.1
+Suggests: microbenchmark
