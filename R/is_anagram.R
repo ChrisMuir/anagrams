@@ -16,6 +16,9 @@
 #' str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 #' is_anagram("cats", str_to_check)
 #' is_anagram("cats", str_to_check, any_len = TRUE)
+#'
+#' @useDynLib anagrams
+#' @importFrom Rcpp sourceCpp
 is_anagram <- function(string, terms, any_len = FALSE) {
   stopifnot(is.character(string) && length(string) == 1)
   stopifnot(is.character(terms))

@@ -26,4 +26,5 @@ character vector, check if input string is an anagram of the given element.
 str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 is_anagram("cats", str_to_check)
 is_anagram("cats", str_to_check, any_len = TRUE)
+
 }
