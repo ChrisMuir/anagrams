@@ -3,6 +3,8 @@
 anagrams
 ========
 
+[![Travis-CI Build Status](https://travis-ci.org/ChrisMuir/anagrams.svg?branch=master)](https://travis-ci.org/ChrisMuir/anagrams)
+
 `anagrams` is a super simple R package providing a function for comparing character vectors and determining if strings are [anagrams](https://en.wikipedia.org/wiki/Anagram) of one another. The project was inspired by [this](http://www.programmingr.com/content/simple-anagram-finder-using-r/) blog post on finding anagrams in R. The package uses C++ and [Rcpp](https://CRAN.R-project.org/package=Rcpp) for speed.
 
 Installation
@@ -99,9 +101,9 @@ microbenchmark(
   cpp = is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
 )
 #> Unit: microseconds
-#>  expr    min      lq      mean  median     uq      max neval
-#>   rfn 57.550 61.7660 161.23924 65.2480 70.380 9285.696   100
-#>   cpp 27.859 34.0905  39.21142 36.6565 39.222   76.612   100
+#>  expr    min      lq      mean  median      uq      max neval
+#>   rfn 51.188 55.5955 151.23675 58.3585 61.3685 9072.772   100
+#>   cpp 25.911 29.3605  33.88164 32.3185 35.4530   96.451   100
 
 
 # Test with long input vector, in which each element is shorter than the input string.
@@ -112,9 +114,12 @@ microbenchmark(
   times = 20
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median        uq      max neval
-#>   rfn 120.93618 124.45039 128.02877 126.82588 130.18760 140.4584    20
-#>   cpp  16.93434  17.82764  18.26786  18.31957  18.65882  19.6916    20
+#>  expr        min         lq       mean     median         uq       max
+#>   rfn 110.329656 112.808733 116.302769 115.387940 117.026917 130.04606
+#>   cpp   5.350758   6.254421   7.243815   6.836764   8.275083  10.05498
+#>  neval
+#>     20
+#>     20
 
 
 # Test with long input vector, in which each element is the same length as the input string.
@@ -125,9 +130,9 @@ microbenchmark(
   times = 20
 )
 #> Unit: milliseconds
-#>  expr        min        lq       mean     median         uq        max
-#>   rfn 2961.01012 3012.8663 3038.16532 3036.05227 3063.79425 3125.83379
-#>   cpp   30.24632   31.6935   32.06241   31.99738   32.74681   33.25138
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 2735.72575 2775.71801 2814.46250 2807.04347 2840.25944 2970.20943
+#>   cpp   10.76772   11.71796   12.50071   12.12401   13.25669   15.64292
 #>  neval
 #>     20
 #>     20
@@ -141,10 +146,10 @@ microbenchmark(
   times = 20
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 2697.30326 2722.34406 2796.92552 2740.82748 2843.67374 3170.45586
-#>   cpp   23.39166   24.20084   25.35031   24.80291   25.61246   34.37782
-#>  neval
-#>     20
-#>     20
+#>  expr         min          lq        mean      median          uq
+#>   rfn 2404.121422 2439.530582 2452.751484 2459.821906 2469.003985
+#>   cpp    4.897945    5.089342    5.684283    5.286816    6.039366
+#>          max neval
+#>  2475.289726    20
+#>     7.639386    20
 ```
