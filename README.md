@@ -101,9 +101,9 @@ microbenchmark(
   cpp = is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
 )
 #> Unit: microseconds
-#>  expr    min      lq      mean  median      uq      max neval
-#>   rfn 51.188 55.5955 151.23675 58.3585 61.3685 9072.772   100
-#>   cpp 25.911 29.3605  33.88164 32.3185 35.4530   96.451   100
+#>  expr    min      lq      mean median     uq      max neval
+#>   rfn 56.451 59.3840 142.20751 61.582 63.049 8032.428   100
+#>   cpp 28.593 31.5245  34.42051 33.907 35.557   69.280   100
 
 
 # Test with long input vector, in which each element is shorter than the input string.
@@ -114,12 +114,9 @@ microbenchmark(
   times = 20
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq       max
-#>   rfn 110.329656 112.808733 116.302769 115.387940 117.026917 130.04606
-#>   cpp   5.350758   6.254421   7.243815   6.836764   8.275083  10.05498
-#>  neval
-#>     20
-#>     20
+#>  expr       min        lq      mean    median        uq       max neval
+#>   rfn 118.39152 119.74394 123.09335 124.03343 125.11386 126.71170    20
+#>   cpp  17.06043  17.32161  17.62812  17.55364  17.86301  18.40607    20
 
 
 # Test with long input vector, in which each element is the same length as the input string.
@@ -131,8 +128,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr        min         lq       mean     median         uq        max
-#>   rfn 2735.72575 2775.71801 2814.46250 2807.04347 2840.25944 2970.20943
-#>   cpp   10.76772   11.71796   12.50071   12.12401   13.25669   15.64292
+#>   rfn 3027.49969 3113.09950 3162.88341 3177.92727 3199.14192 3293.18012
+#>   cpp   31.45341   31.91491   35.28051   34.00705   37.46444   43.16866
 #>  neval
 #>     20
 #>     20
@@ -146,10 +143,10 @@ microbenchmark(
   times = 20
 )
 #> Unit: milliseconds
-#>  expr         min          lq        mean      median          uq
-#>   rfn 2404.121422 2439.530582 2452.751484 2459.821906 2469.003985
-#>   cpp    4.897945    5.089342    5.684283    5.286816    6.039366
-#>          max neval
-#>  2475.289726    20
-#>     7.639386    20
+#>  expr       min         lq       mean    median         uq        max
+#>   rfn 2669.1625 2699.32648 2774.64875 2781.4627 2843.27951 2964.43563
+#>   cpp   24.3909   25.36136   26.29793   26.1502   26.98156   29.10119
+#>  neval
+#>     20
+#>     20
 ```
