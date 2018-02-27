@@ -26,19 +26,19 @@ The exported function `is_anagram` takes as input a string and a character vecto
 library(anagrams)
 
 # Test for anagrams that are the same length as the input string.
-is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
+is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
 #> [1] FALSE  TRUE FALSE  TRUE FALSE
 
 # Set arg "any_len" to TRUE to test for anagrams that are any length (either same length or sub-string).
-is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"), any_len = TRUE)
+is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"), any_len = TRUE)
 #> [1]  TRUE  TRUE FALSE  TRUE FALSE
 
 # Use arg "ignore_spaces" to make anagram searching insensitive to spaces.
-is_anagram("c a t s", c("cats are great", "t acs", "frogs", "ca   ts", "ts"), ignore_spaces = TRUE)
+is_anagram("s t a c", c("cats are great", "t acs", "frogs", "ca   ts", "ts"), ignore_spaces = TRUE)
 #> [1] FALSE  TRUE FALSE  TRUE FALSE
 
 # Use arg "ignore_case" to make anagram searching insensitive to lower/upper case.
-is_anagram("CATs", c("catS are great", "tacs", "frogs", "CaTS", "ts"), ignore_case = TRUE)
+is_anagram("STAc", c("catS are great", "tacs", "frogs", "CaTS", "ts"), ignore_case = TRUE)
 #> [1] FALSE  TRUE FALSE  TRUE FALSE
 ```
 
@@ -49,33 +49,30 @@ Let's create a simple, pure R version of `is_anagram` that searches for same len
 
 ``` r
 r_is_anagram <- function(string, terms) {
-  # Get sorted version of arg "string".
-  str_key <- paste(sort(
-    unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
-  ), collapse = "")
+  # Split both inputs into char vectors of individual chars.
+  string <- unlist(strsplit(string, "", fixed = TRUE))
+  terms <- strsplit(terms, "", fixed = TRUE)
   
-  # Get number of chars in arg "string".
-  str_len <- nchar(string)
+  # Get number of chars of input "string"
+  str_len <- length(string)
   
-  # For each element of arg "terms", if nchar is equal to str_len, then get
-  # sorted version and compare that to str_key.
   vapply(terms, function(x) {
-    if (nchar(x) != str_len) {
+    if (length(x) != str_len) {
       return(FALSE)
     }
-    if (x == string) {
+    if (identical(x, string)) {
       return(TRUE)
     }
-    paste(sort(
-      unlist(strsplit(x, "", fixed = TRUE), FALSE, FALSE)
-    ), collapse = "") == str_key
-  }, logical(1), USE.NAMES = FALSE)
+    
+    # Check if all chars of "string" appear in those of x.
+    all(string %in% x)
+  }, logical(1))
 }
 
 # Test to make sure its output is identical to that of pkg function is_anagram.
 identical(
-  r_is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts")), 
-  is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
+  r_is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts")), 
+  is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
 )
 #> [1] TRUE
 ```
@@ -95,58 +92,41 @@ Now we'll compare speeds.
 ``` r
 library(microbenchmark)
 
-# Test with short input vector.
+# Test in which each element is shorter than the input string.
+test_vect <- get_rand_str(n = 100000, str_len = 3)
 microbenchmark(
-  rfn = r_is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts")), 
-  cpp = is_anagram("cats", c("cats are great", "tacs", "frogs", "cats", "ts"))
+  rfn = r_is_anagram("cats", test_vect), 
+  cpp = is_anagram("cats", test_vect), 
+  times = 100
 )
-#> Unit: microseconds
-#>  expr    min      lq      mean median     uq      max neval
-#>   rfn 56.451 59.3840 142.20751 61.582 63.049 8032.428   100
-#>   cpp 28.593 31.5245  34.42051 33.907 35.557   69.280   100
+#> Unit: milliseconds
+#>  expr      min       lq      mean   median        uq       max neval
+#>   rfn 86.18531 91.21542 106.48151 94.60389 126.30866 140.31029   100
+#>   cpp 16.72535 17.23285  17.53494 17.56935  17.77884  18.37779   100
 
 
-# Test with long input vector, in which each element is shorter than the input string.
-long_vect <- get_rand_str(n = 100000, str_len = 3)
+# Test in which each element is the same length as the input string.
+test_vect <- get_rand_str(n = 100000, str_len = 4)
 microbenchmark(
-  rfn = r_is_anagram("cats", long_vect), 
-  cpp = is_anagram("cats", long_vect), 
-  times = 20
+  rfn = r_is_anagram("cats", test_vect), 
+  cpp = is_anagram("cats", test_vect), 
+  times = 100
 )
 #> Unit: milliseconds
 #>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 118.39152 119.74394 123.09335 124.03343 125.11386 126.71170    20
-#>   cpp  17.06043  17.32161  17.62812  17.55364  17.86301  18.40607    20
+#>   rfn 271.01454 287.73329 310.58123 297.95937 340.05847 352.65563   100
+#>   cpp  30.07249  31.08401  31.50718  31.57794  31.89025  32.76963   100
 
 
-# Test with long input vector, in which each element is the same length as the input string.
-long_vect <- get_rand_str(n = 100000, str_len = 4)
+# Test in which each element is an anagram of the input string.
+test_vect <- rep("tacs", 100000)
 microbenchmark(
-  rfn = r_is_anagram("cats", long_vect), 
-  cpp = is_anagram("cats", long_vect), 
-  times = 20
+  rfn = r_is_anagram("cats", test_vect), 
+  cpp = is_anagram("cats", test_vect), 
+  times = 100
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 3027.49969 3113.09950 3162.88341 3177.92727 3199.14192 3293.18012
-#>   cpp   31.45341   31.91491   35.28051   34.00705   37.46444   43.16866
-#>  neval
-#>     20
-#>     20
-
-
-# Test with long input vector, in which each element is an anagram of the input string.
-long_vect <- rep("tacs", 100000)
-microbenchmark(
-  rfn = r_is_anagram("cats", long_vect), 
-  cpp = is_anagram("cats", long_vect), 
-  times = 20
-)
-#> Unit: milliseconds
-#>  expr       min         lq       mean    median         uq        max
-#>   rfn 2669.1625 2699.32648 2774.64875 2781.4627 2843.27951 2964.43563
-#>   cpp   24.3909   25.36136   26.29793   26.1502   26.98156   29.10119
-#>  neval
-#>     20
-#>     20
+#>  expr       min        lq      mean    median        uq       max neval
+#>   rfn 226.08139 243.98871 259.55139 250.69417 282.54758 300.68308   100
+#>   cpp  23.23763  23.80818  24.36091  24.38386  24.77003  26.54729   100
 ```
