@@ -8,11 +8,12 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
   int terms_len = terms.size();
   int x_len = x.size();
   LogicalVector out(terms_len);
+  std::string::iterator x_begin = x.begin();
+  std::string::iterator x_end = x.end();
 
   // Iterate over elements of "terms".
   for(int i = 0; i < terms_len; ++i) {
     std::string terms_iter = terms[i];
-    int terms_iter_len = terms_iter.size();
 
     // If terms_iter == x, append "true" and move on to the next iteration.
     if(terms_iter == x) {
@@ -22,6 +23,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
 
     // If length of terms_iter is less than the length of x, append "false"
     // and move on to the next iteration.
+    int terms_iter_len = terms_iter.size();
     if(terms_iter_len < x_len) {
       out[i] = false;
       continue;
@@ -31,10 +33,10 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
     // a char is found in terms_iter, remove that char from terms_iter. Append
     // FALSE as soon as a char is not found. If all chars are found, append
     // TRUE.
+    std::string::iterator x_char;
     bool anagram = true;
-    for(int x_char = 0; x_char < x_len; ++x_char) {
-      char x_char_curr = x[x_char];
-      int char_match = terms_iter.find_first_of(x_char_curr);
+    for(x_char = x_begin; x_char != x_end; ++x_char) {
+      int char_match = terms_iter.find_first_of(*x_char);
       if(char_match != -1) {
         terms_iter.erase(char_match, 1);
       } else {
