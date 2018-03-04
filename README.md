@@ -49,24 +49,23 @@ Let's create a simple, pure R version of `is_anagram` that searches for same len
 
 ``` r
 r_is_anagram <- function(string, terms) {
-  # Split both inputs into char vectors of individual chars.
-  string <- unlist(strsplit(string, "", fixed = TRUE))
-  terms <- strsplit(terms, "", fixed = TRUE)
+  out <- rep(FALSE, length(terms))
+  terms_to_insp <- which(nchar(terms) == nchar(string))
+  if (length(terms_to_insp) == 0) {
+    return(out)
+  }
+  string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
+  str_key <- paste(sort(string_spl), collapse = "")
+  terms_spl <- strsplit(terms, "", fixed = TRUE)
   
-  # Get number of chars of input "string"
-  str_len <- length(string)
-  
-  vapply(terms, function(x) {
-    if (length(x) != str_len) {
-      return(FALSE)
-    }
-    if (identical(x, string)) {
+  out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
+    if (all(x == string_spl)) {
       return(TRUE)
     }
-    
-    # Check if all chars of "string" appear in those of x.
-    all(string %in% x)
-  }, logical(1))
+    paste(sort(x), collapse = "") == str_key
+  }, logical(1), USE.NAMES = FALSE)
+  
+  out
 }
 
 # Test to make sure its output is identical to that of pkg function is_anagram.
@@ -77,56 +76,61 @@ identical(
 #> [1] TRUE
 ```
 
-Also create a quick convenience function for generating random strings.
-
-``` r
-get_rand_str <- function(n, str_len) {
-  vapply(seq_len(n), function(x) {
-    paste(letters[sample(length(letters), str_len, replace = TRUE)], collapse = "")
-  }, character(1))
-}
-```
-
 Now we'll compare speeds.
 
 ``` r
 library(microbenchmark)
+library(stringi)
 
 # Test in which each element is shorter than the input string.
-test_vect <- get_rand_str(n = 100000, str_len = 3)
+test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr      min       lq      mean   median        uq       max neval
-#>   rfn 86.18531 91.21542 106.48151 94.60389 126.30866 140.31029   100
-#>   cpp 16.72535 17.23285  17.53494 17.56935  17.77884  18.37779   100
+#>  expr      min       lq     mean   median       uq      max neval
+#>   rfn 20.52002 21.40581 23.07862 21.84550 24.57527 63.23706   100
+#>   cpp 16.44717 16.89621 17.29934 17.11174 17.36027 21.36420   100
 
 
 # Test in which each element is the same length as the input string.
-test_vect <- get_rand_str(n = 100000, str_len = 4)
+test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 271.01454 287.73329 310.58123 297.95937 340.05847 352.65563   100
-#>   cpp  30.07249  31.08401  31.50718  31.57794  31.89025  32.76963   100
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 2643.43228 2705.76962 2722.52979 2717.65770 2740.00392 2792.41243
+#>   cpp   25.87032   26.79002   27.21749   27.06659   27.49125   30.80019
+#>  neval
+#>    100
+#>    100
 
 
 # Test in which each element is an anagram of the input string.
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
+)
+#> Unit: milliseconds
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 2209.83238 2257.16973 2275.43951 2271.15765 2286.66441 2409.20828
+#>   cpp   23.70432   24.39089   24.83158   24.74169   25.10806   27.60598
+#>  neval
+#>    100
+#>    100
+
+# Test in which each element is a string with length between two and six chars.
+test_vect <- stringi::stri_rand_strings(100000, 2:6)
+microbenchmark(
+  rfn = r_is_anagram("cats", test_vect), 
+  cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
 #>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 226.08139 243.98871 259.55139 250.69417 282.54758 300.68308   100
-#>   cpp  23.23763  23.80818  24.36091  24.38386  24.77003  26.54729   100
+#>   rfn 556.71083 592.27684 603.82239 599.87984 611.80586 674.75298   100
+#>   cpp  17.93174  18.52502  19.09378  18.82761  19.31037  22.78792   100
 ```

@@ -52,24 +52,23 @@ is_anagram("STAc", c("catS are great", "tacs", "frogs", "CaTS", "ts"), ignore_ca
 Let's create a simple, pure R version of `is_anagram` that searches for same length anagrams, and compare speeds.
 ```{r}
 r_is_anagram <- function(string, terms) {
-  # Split both inputs into char vectors of individual chars.
-  string <- unlist(strsplit(string, "", fixed = TRUE))
-  terms <- strsplit(terms, "", fixed = TRUE)
+  out <- rep(FALSE, length(terms))
+  terms_to_insp <- which(nchar(terms) == nchar(string))
+  if (length(terms_to_insp) == 0) {
+    return(out)
+  }
+  string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
+  str_key <- paste(sort(string_spl), collapse = "")
+  terms_spl <- strsplit(terms, "", fixed = TRUE)
   
-  # Get number of chars of input "string"
-  str_len <- length(string)
-  
-  vapply(terms, function(x) {
-    if (length(x) != str_len) {
-      return(FALSE)
-    }
-    if (identical(x, string)) {
+  out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
+    if (all(x == string_spl)) {
       return(TRUE)
     }
-    
-    # Check if all chars of "string" appear in those of x.
-    all(string %in% x)
-  }, logical(1))
+    paste(sort(x), collapse = "") == str_key
+  }, logical(1), USE.NAMES = FALSE)
+  
+  out
 }
 
 # Test to make sure its output is identical to that of pkg function is_anagram.
@@ -79,36 +78,25 @@ identical(
 )
 ```
 
-Also create a quick convenience function for generating random strings.
-
-```{r}
-get_rand_str <- function(n, str_len) {
-  vapply(seq_len(n), function(x) {
-    paste(letters[sample(length(letters), str_len, replace = TRUE)], collapse = "")
-  }, character(1))
-}
-```
-
 Now we'll compare speeds.
 
 ```{r}
 library(microbenchmark)
+library(stringi)
 
 # Test in which each element is shorter than the input string.
-test_vect <- get_rand_str(n = 100000, str_len = 3)
+test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
 )
 
 
 # Test in which each element is the same length as the input string.
-test_vect <- get_rand_str(n = 100000, str_len = 4)
+test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
 )
 
 
@@ -116,7 +104,13 @@ microbenchmark(
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
-  times = 100
+  cpp = is_anagram("cats", test_vect)
+)
+
+# Test in which each element is a string with length between two and six chars.
+test_vect <- stringi::stri_rand_strings(100000, 2:6)
+microbenchmark(
+  rfn = r_is_anagram("cats", test_vect), 
+  cpp = is_anagram("cats", test_vect)
 )
 ```
