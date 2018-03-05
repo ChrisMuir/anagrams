@@ -5,6 +5,10 @@
 #'
 #' @param string Char string.
 #' @param terms Character vector.
+#' @param value Logical, dicates whether the function will return a logical
+#'  vector indicating which elements of \code{terms} are anagram matches to
+#'  \code{string}, or return the values of \code{terms} that are anagram
+#'  matches to \code{string}. Default value is FALSE.
 #' @param any_len Logical, should the function be looking for anagrams that
 #'  are any length, or be restricted to anagrams that are the same length as
 #'  input arg \code{string}. Default value is FALSE.
@@ -25,10 +29,11 @@
 #'
 #' @useDynLib anagrams
 #' @importFrom Rcpp sourceCpp
-is_anagram <- function(string, terms, any_len = FALSE, ignore_spaces = FALSE,
-                       ignore_case = FALSE) {
+is_anagram <- function(string, terms, value = FALSE, any_len = FALSE,
+                       ignore_spaces = FALSE, ignore_case = FALSE) {
   stopifnot(is.character(string) && length(string) == 1)
   stopifnot(is.character(terms))
+  stopifnot(is.logical(value))
   stopifnot(is.logical(any_len))
   stopifnot(is.logical(ignore_spaces))
   stopifnot(is.logical(ignore_case))
@@ -45,6 +50,6 @@ is_anagram <- function(string, terms, any_len = FALSE, ignore_spaces = FALSE,
     terms <- tolower(terms)
   }
 
-  .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', string, terms,
+  .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', string, terms, value,
         any_len)
 }

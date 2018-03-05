@@ -29,6 +29,10 @@ library(anagrams)
 is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
 #> [1] FALSE  TRUE FALSE  TRUE FALSE
 
+# Use arg "value" to return the values that are anagrams.
+is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"), value = TRUE)
+#> [1] "tacs" "cats"
+
 # Set arg "any_len" to TRUE to test for anagrams that are any length (either same length or sub-string).
 is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"), any_len = TRUE)
 #> [1]  TRUE  TRUE FALSE  TRUE FALSE
@@ -90,8 +94,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr      min       lq     mean   median       uq      max neval
-#>   rfn 20.76415 21.42395 23.28445 21.88234 25.16561 64.01307   100
-#>   cpp 16.44681 17.09232 17.62277 17.40774 17.80106 22.17504   100
+#>   rfn 21.14317 21.71995 23.63203 22.14149 25.13629 66.05444   100
+#>   cpp 16.83316 17.49718 17.96451 17.71877 18.07946 21.92761   100
 
 
 # Test in which each element is the same length as the input string.
@@ -101,9 +105,9 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median        uq        max
-#>   rfn 1883.76280 1935.13358 1959.43708 1954.15107 1972.8537 2163.24410
-#>   cpp   25.76952   26.97623   27.74355   27.41519   27.9357   38.05294
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 1872.35949 1923.98045 1954.61521 1950.37990 1981.90863 2053.52103
+#>   cpp   25.88975   26.64083   27.32908   27.03378   27.44653   36.18348
 #>  neval
 #>    100
 #>    100
@@ -117,8 +121,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr        min         lq       mean     median         uq        max
-#>   rfn 1530.72761 1581.97156 1596.76444 1598.40481 1608.46999 1661.53776
-#>   cpp   23.68233   24.58846   24.97011   24.90425   25.30985   29.13307
+#>   rfn 1538.40960 1581.33320 1603.89282 1601.65069 1625.43529 1681.48081
+#>   cpp   23.82749   24.60166   25.09615   24.89766   25.37767   28.47656
 #>  neval
 #>    100
 #>    100
@@ -130,7 +134,7 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 398.91124 448.03355 454.84639 453.93700 459.89909 517.28219   100
-#>   cpp  17.85879  18.42843  18.90864  18.85254  19.29442  20.78907   100
+#>  expr       min        lq     mean    median        uq      max neval
+#>   rfn 398.26793 452.02667 456.9868 457.14238 462.38474 505.4922   100
+#>   cpp  18.11612  18.73872  19.2822  19.20187  19.68848  22.0647   100
 ```

@@ -6,21 +6,22 @@
 using namespace Rcpp;
 
 // cpp_is_anagram
-LogicalVector cpp_is_anagram(std::string x, std::vector<std::string> terms, bool any_len);
-RcppExport SEXP _anagrams_cpp_is_anagram(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP) {
+SEXP cpp_is_anagram(std::string x, std::vector<std::string> terms, bool value, bool any_len);
+RcppExport SEXP _anagrams_cpp_is_anagram(SEXP xSEXP, SEXP termsSEXP, SEXP valueSEXP, SEXP any_lenSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
     Rcpp::traits::input_parameter< std::vector<std::string> >::type terms(termsSEXP);
+    Rcpp::traits::input_parameter< bool >::type value(valueSEXP);
     Rcpp::traits::input_parameter< bool >::type any_len(any_lenSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_is_anagram(x, terms, any_len));
+    rcpp_result_gen = Rcpp::wrap(cpp_is_anagram(x, terms, value, any_len));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_anagrams_cpp_is_anagram", (DL_FUNC) &_anagrams_cpp_is_anagram, 3},
+    {"_anagrams_cpp_is_anagram", (DL_FUNC) &_anagrams_cpp_is_anagram, 4},
     {NULL, NULL, 0}
 };
 

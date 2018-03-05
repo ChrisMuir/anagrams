@@ -37,6 +37,9 @@ library(anagrams)
 # Test for anagrams that are the same length as the input string.
 is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
 
+# Use arg "value" to return the values that are anagrams.
+is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"), value = TRUE)
+
 # Set arg "any_len" to TRUE to test for anagrams that are any length (either same length or sub-string).
 is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"), any_len = TRUE)
 

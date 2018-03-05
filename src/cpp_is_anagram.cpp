@@ -92,13 +92,28 @@ LogicalVector cpp_is_anagram_same_len(std::string x,
 // anagram finding functions, depending on whether arg "any_len" is TRUE or
 // FALSE.
 //[[Rcpp::export]]
-LogicalVector cpp_is_anagram(std::string x, std::vector<std::string> terms,
-                             bool any_len) {
+SEXP cpp_is_anagram(std::string x, std::vector<std::string> terms,
+                             bool value, bool any_len) {
   // If "any_len" is true, return output from cpp_is_anagram_any_len,
   // otherwise return output from cpp_is_anagram_same_len.
+  LogicalVector ana;
   if(any_len) {
-    return cpp_is_anagram_any_len(x, terms);
+    ana = cpp_is_anagram_any_len(x, terms);
   } else {
-    return cpp_is_anagram_same_len(x, terms);
+    ana = cpp_is_anagram_same_len(x, terms);
+  }
+  if(value) {
+    CharacterVector out(sum(ana));
+    int terms_len = terms.size();
+    int counter = 0;
+    for(int i = 0; i < terms_len; ++i) {
+      if(ana[i]) {
+        out[counter] = terms[i];
+        counter += 1;
+      }
+    }
+    return(out);
+  } else {
+    return(ana);
   }
 }

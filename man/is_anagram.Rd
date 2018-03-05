@@ -4,13 +4,18 @@
 \alias{is_anagram}
 \title{Check for Anagrams}
 \usage{
-is_anagram(string, terms, any_len = FALSE, ignore_spaces = FALSE,
-  ignore_case = FALSE)
+is_anagram(string, terms, value = FALSE, any_len = FALSE,
+  ignore_spaces = FALSE, ignore_case = FALSE)
 }
 \arguments{
 \item{string}{Char string.}
 
 \item{terms}{Character vector.}
+
+\item{value}{Logical, dicates whether the function will return a logical
+vector indicating which elements of \code{terms} are anagram matches to
+\code{string}, or return the values of \code{terms} that are anagram
+matches to \code{string}. Default value is FALSE.}
 
 \item{any_len}{Logical, should the function be looking for anagrams that
 are any length, or be restricted to anagrams that are the same length as
