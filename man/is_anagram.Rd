@@ -12,31 +12,28 @@ is_anagram(string, terms, value = FALSE, any_len = FALSE,
 
 \item{terms}{Character vector.}
 
-\item{value}{Logical, dicates whether the function will return a logical
-vector indicating which elements of \code{terms} are anagram matches to
-\code{string}, or return the values of \code{terms} that are anagram
-matches to \code{string}. Default value is FALSE.}
+\item{value}{Logical, return anagram matches (TRUE), or logical vector
+(FALSE). Default value is FALSE.}
 
-\item{any_len}{Logical, should the function be looking for anagrams that
-are any length, or be restricted to anagrams that are the same length as
-input arg \code{string}. Default value is FALSE.}
+\item{any_len}{Logical, look for anagrams that are any length (TRUE), or
+restrict to same length anagrams (FALSE). Default value is FALSE.}
 
-\item{ignore_spaces}{logical, should spaces be ignored when searching for
-anagrams. Default value is FALSE.}
+\item{ignore_spaces}{logical, ignores spaces. Default value is FALSE.}
 
-\item{ignore_case}{logical, should case (lower/upper) be ignored when
-searching for anagrams. Default value is FALSE.}
+\item{ignore_case}{logical, ignores case. Default value is FALSE.}
 }
 \value{
-Logical vector, with length equal to that of \code{terms}.
+If \code{value} is FALSE, return logical vector with length equal
+ to that of \code{terms}. Otherwise, return character vector of anagram matches.
 }
 \description{
-Given an input string and a character vector, for each element of the
-character vector, check if input string is an anagram of the given element.
+Given an input string and a character vector, check if string is an anagram
+to each element of the character vector.
 }
 \examples{
 str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 is_anagram("cats", str_to_check)
+is_anagram("cats", str_to_check, value = TRUE)
 is_anagram("cats", str_to_check, any_len = TRUE)
 is_anagram("c a t s", str_to_check, ignore_spaces = TRUE)
 is_anagram("CATs", str_to_check, ignore_case = TRUE)

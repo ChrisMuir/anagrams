@@ -1,28 +1,25 @@
 #' Check for Anagrams
 #'
-#' Given an input string and a character vector, for each element of the
-#' character vector, check if input string is an anagram of the given element.
+#' Given an input string and a character vector, check if string is an anagram
+#' to each element of the character vector.
 #'
 #' @param string Char string.
 #' @param terms Character vector.
-#' @param value Logical, dicates whether the function will return a logical
-#'  vector indicating which elements of \code{terms} are anagram matches to
-#'  \code{string}, or return the values of \code{terms} that are anagram
-#'  matches to \code{string}. Default value is FALSE.
-#' @param any_len Logical, should the function be looking for anagrams that
-#'  are any length, or be restricted to anagrams that are the same length as
-#'  input arg \code{string}. Default value is FALSE.
-#' @param ignore_spaces logical, should spaces be ignored when searching for
-#'  anagrams. Default value is FALSE.
-#' @param ignore_case logical, should case (lower/upper) be ignored when
-#'  searching for anagrams. Default value is FALSE.
+#' @param value Logical, return anagram matches (TRUE), or logical vector
+#'  (FALSE). Default value is FALSE.
+#' @param any_len Logical, look for anagrams that are any length (TRUE), or
+#'  restrict to same length anagrams (FALSE). Default value is FALSE.
+#' @param ignore_spaces logical, ignores spaces. Default value is FALSE.
+#' @param ignore_case logical, ignores case. Default value is FALSE.
 #'
-#' @return Logical vector, with length equal to that of \code{terms}.
+#' @return If \code{value} is FALSE, return logical vector with length equal
+#'  to that of \code{terms}. Otherwise, return character vector of anagram matches.
 #' @export
 #'
 #' @examples
 #' str_to_check <- c("cats are great", "tacs", "frogs", "cats", "ts")
 #' is_anagram("cats", str_to_check)
+#' is_anagram("cats", str_to_check, value = TRUE)
 #' is_anagram("cats", str_to_check, any_len = TRUE)
 #' is_anagram("c a t s", str_to_check, ignore_spaces = TRUE)
 #' is_anagram("CATs", str_to_check, ignore_case = TRUE)
@@ -50,6 +47,5 @@ is_anagram <- function(string, terms, value = FALSE, any_len = FALSE,
     terms <- tolower(terms)
   }
 
-  .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', string, terms, value,
-        any_len)
+  .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', string, terms, value, any_len)
 }
