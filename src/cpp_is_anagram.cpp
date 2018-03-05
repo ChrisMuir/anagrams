@@ -5,7 +5,7 @@ using namespace Rcpp;
 // Check for anagram sub-strings.
 //[[Rcpp::export]]
 LogicalVector cpp_is_anagram_any_len(std::string x,
-                                     std::vector<std::string> terms) {
+                                     StringVector terms) {
   int terms_len = terms.size();
   int x_len = x.size();
   LogicalVector out(terms_len);
@@ -14,7 +14,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
 
   // Iterate over elements of "terms".
   for(int i = 0; i < terms_len; ++i) {
-    std::string terms_iter = terms[i];
+    std::string terms_iter = as<std::string>(terms[i]);
 
     // If terms_iter == x, append "true" and move on to the next iteration.
     if(terms_iter == x) {
@@ -60,7 +60,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
 // Check for anagrams that are the same length as input arg x.
 //[[Rcpp::export]]
 LogicalVector cpp_is_anagram_same_len(std::string x,
-                                      std::vector<std::string> terms) {
+                                      StringVector terms) {
   int terms_len = terms.size();
   int x_len = x.size();
   std::string x_original = x;
@@ -72,20 +72,20 @@ LogicalVector cpp_is_anagram_same_len(std::string x,
   // For each element of arg "terms", if nchar is equal to x_len, then get
   // sorted version and compare that to the sorted version of x.
   for(int i = 0; i < terms_len; ++i) {
-    std::string terms_iter = terms[i];
+    std::string terms_iter = as<std::string>(terms[i]);
     int terms_iter_len = terms_iter.size();
-
-    // If terms_iter == x_original, return TRUE and move on to the next
-    // iteration.
-    if(terms_iter == x_original) {
-      out[i] = true;
-      continue;
-    }
 
     // If length of terms_iter is not equal to the length of x, return FALSE
     // and move on to the next iteration.
     if(terms_iter_len != x_len) {
       out[i] = false;
+      continue;
+    }
+
+    // If terms_iter == x_original, return TRUE and move on to the next
+    // iteration.
+    if(terms_iter == x_original) {
+      out[i] = true;
       continue;
     }
 
@@ -104,7 +104,7 @@ LogicalVector cpp_is_anagram_same_len(std::string x,
 // anagrams, otherwise returns a logical vector indicating which elements of
 // "terms" are anagrams to "x".
 //[[Rcpp::export]]
-SEXP cpp_is_anagram(std::string x, std::vector<std::string> terms,
+SEXP cpp_is_anagram(std::string x, StringVector terms,
                     bool value, bool any_len) {
   // If any_len is true, get result from cpp_is_anagram_any_len,
   // otherwise get result from cpp_is_anagram_same_len.

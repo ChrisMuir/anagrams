@@ -93,9 +93,9 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr      min       lq     mean   median       uq      max neval
-#>   rfn 21.14317 21.71995 23.63203 22.14149 25.13629 66.05444   100
-#>   cpp 16.83316 17.49718 17.96451 17.71877 18.07946 21.92761   100
+#>  expr       min        lq      mean    median        uq      max neval
+#>   rfn 20.574268 21.287043 22.750075 21.631242 24.024878 63.57063   100
+#>   cpp  7.336328  7.526756  8.069565  7.646621  7.894965 12.27096   100
 
 
 # Test in which each element is the same length as the input string.
@@ -105,9 +105,9 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 1872.35949 1923.98045 1954.61521 1950.37990 1981.90863 2053.52103
-#>   cpp   25.88975   26.64083   27.32908   27.03378   27.44653   36.18348
+#>  expr       min         lq       mean    median         uq        max
+#>   rfn 1897.0385 1939.95806 1966.77981 1958.9873 1990.14321 2141.56905
+#>   cpp   10.7512   11.17934   11.50672   11.4154   11.80506   13.28193
 #>  neval
 #>    100
 #>    100
@@ -120,12 +120,12 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 1538.40960 1581.33320 1603.89282 1601.65069 1625.43529 1681.48081
-#>   cpp   23.82749   24.60166   25.09615   24.89766   25.37767   28.47656
-#>  neval
-#>    100
-#>    100
+#>  expr         min          lq        mean      median          uq
+#>   rfn 1525.306921 1591.498452 1613.709618 1613.859882 1637.003733
+#>   cpp    8.775075    9.155747    9.390426    9.334812    9.589571
+#>         max neval
+#>  1694.42990   100
+#>    11.64084   100
 
 # Test in which each element is a string with length between two and six chars.
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
@@ -134,7 +134,7 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr       min        lq     mean    median        uq      max neval
-#>   rfn 398.26793 452.02667 456.9868 457.14238 462.38474 505.4922   100
-#>   cpp  18.11612  18.73872  19.2822  19.20187  19.68848  22.0647   100
+#>  expr        min         lq      mean     median         uq      max neval
+#>   rfn 393.244964 447.743789 460.06163 458.314456 469.207879 546.3365   100
+#>   cpp   7.983673   8.469547   8.86743   8.750149   9.050362  11.5437   100
 ```
