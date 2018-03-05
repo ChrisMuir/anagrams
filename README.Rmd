@@ -58,14 +58,14 @@ r_is_anagram <- function(string, terms) {
     return(out)
   }
   string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
-  str_key <- paste(sort(string_spl), collapse = "")
+  str_key <- paste(string_spl[sort.list(string_spl)], collapse = "")
   terms_spl <- strsplit(terms, "", fixed = TRUE)
   
   out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
     if (all(x == string_spl)) {
       return(TRUE)
     }
-    paste(sort(x), collapse = "") == str_key
+    paste(x[sort.list(x)], collapse = "") == str_key
   }, logical(1), USE.NAMES = FALSE)
   
   out

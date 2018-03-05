@@ -55,14 +55,14 @@ r_is_anagram <- function(string, terms) {
     return(out)
   }
   string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
-  str_key <- paste(sort(string_spl), collapse = "")
+  str_key <- paste(string_spl[sort.list(string_spl)], collapse = "")
   terms_spl <- strsplit(terms, "", fixed = TRUE)
   
   out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
     if (all(x == string_spl)) {
       return(TRUE)
     }
-    paste(sort(x), collapse = "") == str_key
+    paste(x[sort.list(x)], collapse = "") == str_key
   }, logical(1), USE.NAMES = FALSE)
   
   out
@@ -90,8 +90,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr      min       lq     mean   median       uq      max neval
-#>   rfn 20.52002 21.40581 23.07862 21.84550 24.57527 63.23706   100
-#>   cpp 16.44717 16.89621 17.29934 17.11174 17.36027 21.36420   100
+#>   rfn 20.76415 21.42395 23.28445 21.88234 25.16561 64.01307   100
+#>   cpp 16.44681 17.09232 17.62277 17.40774 17.80106 22.17504   100
 
 
 # Test in which each element is the same length as the input string.
@@ -101,9 +101,9 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 2643.43228 2705.76962 2722.52979 2717.65770 2740.00392 2792.41243
-#>   cpp   25.87032   26.79002   27.21749   27.06659   27.49125   30.80019
+#>  expr        min         lq       mean     median        uq        max
+#>   rfn 1883.76280 1935.13358 1959.43708 1954.15107 1972.8537 2163.24410
+#>   cpp   25.76952   26.97623   27.74355   27.41519   27.9357   38.05294
 #>  neval
 #>    100
 #>    100
@@ -117,8 +117,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr        min         lq       mean     median         uq        max
-#>   rfn 2209.83238 2257.16973 2275.43951 2271.15765 2286.66441 2409.20828
-#>   cpp   23.70432   24.39089   24.83158   24.74169   25.10806   27.60598
+#>   rfn 1530.72761 1581.97156 1596.76444 1598.40481 1608.46999 1661.53776
+#>   cpp   23.68233   24.58846   24.97011   24.90425   25.30985   29.13307
 #>  neval
 #>    100
 #>    100
@@ -131,6 +131,6 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 556.71083 592.27684 603.82239 599.87984 611.80586 674.75298   100
-#>   cpp  17.93174  18.52502  19.09378  18.82761  19.31037  22.78792   100
+#>   rfn 398.91124 448.03355 454.84639 453.93700 459.89909 517.28219   100
+#>   cpp  17.85879  18.42843  18.90864  18.85254  19.29442  20.78907   100
 ```
