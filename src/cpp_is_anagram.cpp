@@ -12,21 +12,27 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
   std::string::iterator x_begin = x.begin();
   std::string::iterator x_end = x.end();
 
+  StringVector::iterator terms_end = terms.end();
+  StringVector::iterator terms_iter;
+  int i = 0;
+
   // Iterate over elements of "terms".
-  for(int i = 0; i < terms_len; ++i) {
-    std::string terms_iter = as<std::string>(terms[i]);
+  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
+    std::string curr_term = as<std::string>(*terms_iter);
 
     // If terms_iter == x, append "true" and move on to the next iteration.
-    if(terms_iter == x) {
+    if(curr_term == x) {
       out[i] = true;
+      i++;
       continue;
     }
 
     // If length of terms_iter is less than the length of x, append "false"
     // and move on to the next iteration.
-    int terms_iter_len = terms_iter.size();
-    if(terms_iter_len < x_len) {
+    int curr_term_len = curr_term.size();
+    if(curr_term_len < x_len) {
       out[i] = false;
+      i++;
       continue;
     }
 
@@ -38,12 +44,12 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
     bool anagram = true;
     for(x_char = x_begin; x_char != x_end; ++x_char) {
       // Get index of first matching char value.
-      int char_match = terms_iter.find_first_of(*x_char);
+      int char_match = curr_term.find_first_of(*x_char);
 
       // If match was found, remove that index from terms_iter. Otherwise,
       // return FALSE for the current term and move on to the next term.
       if(char_match != -1) {
-        terms_iter.erase(char_match, 1);
+        curr_term.erase(char_match, 1);
       } else {
         anagram = false;
         break;
@@ -51,6 +57,7 @@ LogicalVector cpp_is_anagram_any_len(std::string x,
     }
 
     out[i] = anagram;
+    i++;
   }
 
   return out;
@@ -69,29 +76,36 @@ LogicalVector cpp_is_anagram_same_len(std::string x,
   // Sort chars in x.
   std::sort(x.begin(), x.end());
 
+  StringVector::iterator terms_end = terms.end();
+  StringVector::iterator terms_iter;
+  int i = 0;
+
   // For each element of arg "terms", if nchar is equal to x_len, then get
   // sorted version and compare that to the sorted version of x.
-  for(int i = 0; i < terms_len; ++i) {
-    std::string terms_iter = as<std::string>(terms[i]);
-    int terms_iter_len = terms_iter.size();
+  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
+    std::string curr_term = as<std::string>(*terms_iter);
+    int curr_term_len = curr_term.size();
 
     // If length of terms_iter is not equal to the length of x, return FALSE
     // and move on to the next iteration.
-    if(terms_iter_len != x_len) {
+    if(curr_term_len != x_len) {
       out[i] = false;
+      i++;
       continue;
     }
 
     // If terms_iter == x_original, return TRUE and move on to the next
     // iteration.
-    if(terms_iter == x_original) {
+    if(curr_term == x_original) {
       out[i] = true;
+      i++;
       continue;
     }
 
     // sort chars of terms_iter, and compare it to the sorted version of x.
-    std::sort(terms_iter.begin(), terms_iter.end());
-    out[i] = x == terms_iter;
+    std::sort(curr_term.begin(), curr_term.end());
+    out[i] = x == curr_term;
+    i++;
   }
 
   return out;
@@ -119,13 +133,18 @@ SEXP cpp_is_anagram(std::string x, StringVector terms,
   // Otherwise, return ana as a logical vector.
   if(value) {
     CharacterVector out(sum(ana));
-    int terms_len = terms.size();
-    int counter = 0;
-    for(int i = 0; i < terms_len; ++i) {
-      if(ana[i]) {
-        out[counter] = terms[i];
-        counter += 1;
+    LogicalVector::iterator ana_end = ana.end();
+    LogicalVector::iterator ana_iter;
+    int out_i = 0;
+    int ana_i = 0;
+    // For each element of ana, if it's TRUE, append the element from terms of
+    // the current iteration to the output char vector.
+    for(ana_iter = ana.begin(); ana_iter != ana_end; ++ana_iter) {
+      if(*ana_iter) {
+        out[out_i] = terms[ana_i];
+        out_i++;
       }
+      ana_i++;
     }
     return(out);
   } else {
