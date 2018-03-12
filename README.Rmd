@@ -62,15 +62,20 @@ r_is_anagram <- function(string, terms) {
   if (length(terms_to_insp) == 0) {
     return(out)
   }
+  
   string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
-  str_key <- paste(string_spl[sort.list(string_spl)], collapse = "")
+  str_counts <- vapply(string_spl, function(x) sum(string_spl == x), integer(1))
   terms_spl <- strsplit(terms, "", fixed = TRUE)
   
   out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
-    if (all(x == string_spl)) {
-      return(TRUE)
+    anagram <- TRUE
+    for (char in string_spl) {
+      if (str_counts[char] != sum(x == char)) {
+        anagram <- FALSE
+        break
+      }
     }
-    paste(x[sort.list(x)], collapse = "") == str_key
+    anagram
   }, logical(1), USE.NAMES = FALSE)
   
   out
@@ -130,7 +135,6 @@ test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   rfn = r_is_anagram(test_str, test_vect), 
   cpp = is_anagram(test_str, test_vect), 
-  times = 5, 
-  unit = "s"
+  times = 25
 )
 ```

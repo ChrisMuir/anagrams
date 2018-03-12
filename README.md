@@ -60,15 +60,20 @@ r_is_anagram <- function(string, terms) {
   if (length(terms_to_insp) == 0) {
     return(out)
   }
+  
   string_spl <- unlist(strsplit(string, "", fixed = TRUE), FALSE, FALSE)
-  str_key <- paste(string_spl[sort.list(string_spl)], collapse = "")
+  str_counts <- vapply(string_spl, function(x) sum(string_spl == x), integer(1))
   terms_spl <- strsplit(terms, "", fixed = TRUE)
   
   out[terms_to_insp] <- vapply(terms_spl[terms_to_insp], function(x) {
-    if (all(x == string_spl)) {
-      return(TRUE)
+    anagram <- TRUE
+    for (char in string_spl) {
+      if (str_counts[char] != sum(x == char)) {
+        anagram <- FALSE
+        break
+      }
     }
-    paste(x[sort.list(x)], collapse = "") == str_key
+    anagram
   }, logical(1), USE.NAMES = FALSE)
   
   out
@@ -95,9 +100,9 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr      min        lq     mean    median        uq      max neval
-#>   rfn 19.62964 20.736104 22.20028 21.583590 23.341243 29.31049   100
-#>   cpp  7.50128  8.007499  9.13518  8.294149  8.898606 49.45918   100
+#>  expr       min        lq      mean    median       uq      max neval
+#>   rfn 19.460292 20.441574 22.627882 21.445946 23.81209 64.69597   100
+#>   cpp  7.406341  7.754939  8.516918  8.121682  8.68985 15.79909   100
 
 
 # Test in which each element is the same length as the input string.
@@ -108,12 +113,12 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr         min          lq        mean     median          uq
-#>   rfn 1866.858158 1923.963039 1944.140191 1945.30012 1967.639737
-#>   cpp    9.036433    9.144934    9.357407    9.30952    9.438548
-#>         max neval
-#>  2028.33617    25
-#>    10.25524    25
+#>  expr        min         lq       mean     median        uq       max
+#>   rfn 258.287917 292.260310 295.184739 297.383716 300.36531 309.66823
+#>   cpp   8.841422   9.006374   9.255606   9.240972   9.39896  10.04117
+#>  neval
+#>     25
+#>     25
 
 
 # Test in which each element is an anagram of the input string.
@@ -124,12 +129,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 1525.65882 1544.55901 1571.40227 1570.26181 1584.94326 1636.31662
-#>   cpp   11.49238   11.68079   11.92335   11.82779   12.07595   13.01764
-#>  neval
-#>     25
-#>     25
+#>  expr       min        lq      mean    median        uq       max neval
+#>   rfn 516.84196 551.43567 572.57919 572.64042 587.10047 651.38112    25
+#>   cpp  11.47112  11.82375  12.13163  12.00227  12.34573  13.21888    25
 
 
 # Test in which each element is a string with length between two and six chars.
@@ -140,12 +142,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 397.009166 435.781294 437.334173 440.554268 445.260529 453.118837
-#>   cpp   7.952515   8.122233   8.355262   8.456901   8.536078   8.672439
-#>  neval
-#>     25
-#>     25
+#>  expr      min        lq       mean     median         uq       max neval
+#>   rfn 81.29563 97.253442 105.877772 101.809779 109.863098 156.34361    25
+#>   cpp  8.33337  8.593262   9.068279   8.810265   9.404459  10.31793    25
 
 
 # Test in which each element is a long string (nchar == 1000).
@@ -154,14 +153,13 @@ test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   rfn = r_is_anagram(test_str, test_vect), 
   cpp = is_anagram(test_str, test_vect), 
-  times = 5, 
-  unit = "s"
+  times = 25
 )
-#> Unit: seconds
-#>  expr          min           lq         mean       median           uq
-#>   rfn 279.34702874 279.78411828 280.63786255 279.83182677 281.90004538
-#>   cpp   0.07564841   0.07676605   0.07784931   0.07710438   0.07770884
-#>           max neval
-#>  282.32629355     5
-#>    0.08201885     5
+#> Unit: milliseconds
+#>  expr        min         lq      mean     median         uq        max
+#>   rfn 3519.91189 3648.74703 3745.9833 3661.02971 3754.12563 5180.80744
+#>   cpp   72.40326   74.31926   76.2475   75.23493   76.10331   87.80353
+#>  neval
+#>     25
+#>     25
 ```
