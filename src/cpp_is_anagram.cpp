@@ -1,115 +1,9 @@
 #include <Rcpp.h>
+#include <tr1/unordered_map>
+#include"anagrams_header.h"
+
+using namespace std;
 using namespace Rcpp;
-
-
-// Check for anagram sub-strings.
-//[[Rcpp::export]]
-LogicalVector cpp_is_anagram_any_len(std::string x,
-                                     StringVector terms) {
-  int terms_len = terms.size();
-  int x_len = x.size();
-  LogicalVector out(terms_len);
-  std::string::iterator x_begin = x.begin();
-  std::string::iterator x_end = x.end();
-
-  StringVector::iterator terms_end = terms.end();
-  StringVector::iterator terms_iter;
-  int i = 0;
-
-  // Iterate over elements of "terms".
-  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
-    std::string curr_term = as<std::string>(*terms_iter);
-
-    // If terms_iter == x, append "true" and move on to the next iteration.
-    if(curr_term == x) {
-      out[i] = true;
-      i++;
-      continue;
-    }
-
-    // If length of terms_iter is less than the length of x, append "false"
-    // and move on to the next iteration.
-    int curr_term_len = curr_term.size();
-    if(curr_term_len < x_len) {
-      out[i] = false;
-      i++;
-      continue;
-    }
-
-    // For each char in x, look to see if it's present in terms_iter. Each time
-    // a char is found in terms_iter, remove that char from terms_iter. Return
-    // FALSE for this iteration as soon as a char is not found. If all chars
-    // are found, return TRUE.
-    std::string::iterator x_char;
-    bool anagram = true;
-    for(x_char = x_begin; x_char != x_end; ++x_char) {
-      // Get index of first matching char value.
-      int char_match = curr_term.find_first_of(*x_char);
-
-      // If match was found, remove that index from terms_iter. Otherwise,
-      // return FALSE for the current term and move on to the next term.
-      if(char_match != -1) {
-        curr_term.erase(char_match, 1);
-      } else {
-        anagram = false;
-        break;
-      }
-    }
-
-    out[i] = anagram;
-    i++;
-  }
-
-  return out;
-}
-
-
-// Check for anagrams that are the same length as input arg x.
-//[[Rcpp::export]]
-LogicalVector cpp_is_anagram_same_len(std::string x,
-                                      StringVector terms) {
-  int terms_len = terms.size();
-  int x_len = x.size();
-  std::string x_original = x;
-  LogicalVector out(terms_len);
-
-  // Sort chars in x.
-  std::sort(x.begin(), x.end());
-
-  StringVector::iterator terms_end = terms.end();
-  StringVector::iterator terms_iter;
-  int i = 0;
-
-  // For each element of arg "terms", if nchar is equal to x_len, then get
-  // sorted version and compare that to the sorted version of x.
-  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
-    std::string curr_term = as<std::string>(*terms_iter);
-    int curr_term_len = curr_term.size();
-
-    // If length of terms_iter is not equal to the length of x, return FALSE
-    // and move on to the next iteration.
-    if(curr_term_len != x_len) {
-      out[i] = false;
-      i++;
-      continue;
-    }
-
-    // If terms_iter == x_original, return TRUE and move on to the next
-    // iteration.
-    if(curr_term == x_original) {
-      out[i] = true;
-      i++;
-      continue;
-    }
-
-    // sort chars of terms_iter, and compare it to the sorted version of x.
-    std::sort(curr_term.begin(), curr_term.end());
-    out[i] = x == curr_term;
-    i++;
-  }
-
-  return out;
-}
 
 
 // Main function, passes input args "X" and "terms" to one of the two
@@ -122,12 +16,13 @@ SEXP cpp_is_anagram(std::string x, StringVector terms,
                     bool value, bool any_len) {
   // If any_len is true, get result from cpp_is_anagram_any_len,
   // otherwise get result from cpp_is_anagram_same_len.
-  LogicalVector ana;
-  if(any_len) {
-    ana = cpp_is_anagram_any_len(x, terms);
-  } else {
-    ana = cpp_is_anagram_same_len(x, terms);
-  }
+  //LogicalVector ana;
+  //if(any_len) {
+  //  ana = is_anagram_any_len(x, terms);
+  //} else {
+  //  ana = is_anagram_same_len(x, terms);
+  //}
+  LogicalVector ana = get_anagrams(x, terms, any_len);
 
   // If value is TRUE, subset terms by ana, and return subset as a char vector.
   // Otherwise, return ana as a logical vector.
@@ -150,4 +45,100 @@ SEXP cpp_is_anagram(std::string x, StringVector terms,
   } else {
     return(ana);
   }
+}
+
+
+// Look for anagrams of x within terms. Use arg any_len to choose between
+// looking for anagram sub-strings within terms (TRUE), or same length
+// anagrams only (FALSE).
+//[[Rcpp::export]]
+LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
+  // Initialize variables.
+  int terms_len = terms.size();
+  int x_len = x.size();
+  LogicalVector out(terms_len);
+  std::string::iterator x_begin = x.begin();
+  std::string::iterator x_end = x.end();
+
+  // create unordered_map containing the unique chars in x, and the count for
+  // each.
+  std::string::iterator x_char;
+  std::tr1::unordered_map<char, int> x_counts;
+  for(x_char = x_begin; x_char != x_end; ++x_char) {
+    x_counts[*x_char]++;
+  }
+
+  // Initialize loop variables.
+  StringVector::iterator terms_end = terms.end();
+  StringVector::iterator terms_iter;
+  int i = 0;
+
+  // Iterate over the strings in terms.
+  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
+    // Cast *terms_iter as an std::string.
+    std::string curr_term = as<std::string>(*terms_iter);
+
+    // Compare size of curr_term to that of x.
+    int curr_term_len = curr_term.size();
+    if(any_len) {
+      // If any_len == TRUE and length of curr_term is less than the length of
+      // x, append FALSE to the output and move on to the next string in terms.
+      if(curr_term_len < x_len) {
+        out[i] = false;
+        i++;
+        continue;
+      }
+    } else {
+      // If any_len == FALSE and length of terms_iter is not equal to the
+      // length of x, return FALSE and move on to the next iteration.
+      if(curr_term_len != x_len) {
+        out[i] = false;
+        i++;
+        continue;
+      }
+    }
+
+    // If curr_term == x, append "true" to the output and move on to the next
+    // string in terms.
+    if(curr_term == x) {
+      out[i] = true;
+      i++;
+      continue;
+    }
+
+    // initialize iterators to be used in the loop below.
+    std::string::iterator curr_term_begin = curr_term.begin();
+    std::string::iterator curr_term_end = curr_term.end();
+    std::string::iterator x_char;
+    bool anagram = true;
+
+    // Loop over the chars in x. For each, compare the number of times it
+    // appears in x to the number of times it appears in curr_term.
+    if(any_len) {
+      // If any_len == TRUE, if x_char appears in curr_term fewer times than
+      // it appears in x, then we know curr_terms is not an any-length anagram
+      // of x, append FALSE to the output and move on the next string in terms.
+      for(x_char = x_begin; x_char != x_end; ++x_char) {
+        if(std::count(curr_term_begin, curr_term_end, *x_char) < x_counts[*x_char]) {
+          anagram = false;
+          break;
+        }
+      }
+    } else {
+      // If any_len == FALSE, if the count of x_char in curr_term and x is not
+      // equal, then we know curr_terms is not a same-length anagram of x,
+      // append FALSE to the output and move on the next string in terms.
+      for(x_char = x_begin; x_char != x_end; ++x_char) {
+        if(std::count(curr_term_begin, curr_term_end, *x_char) != x_counts[*x_char]) {
+          anagram = false;
+          break;
+        }
+      }
+    }
+
+    out[i] = anagram;
+    i++;
+  }
+
+  return(out);
 }
