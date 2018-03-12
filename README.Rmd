@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 
 `anagrams` is a super simple R package providing a function for comparing character vectors and determining if strings are [anagrams](https://en.wikipedia.org/wiki/Anagram) of one another. The project was inspired by [this](http://www.programmingr.com/content/simple-anagram-finder-using-r/) blog post on finding anagrams in R. The package uses C++ and [Rcpp](https://CRAN.R-project.org/package=Rcpp) for speed.
 
+If you're interested in anagrams and R, be sure to check out [Romain Francois'](https://github.com/romainfrancois) package [anagram](https://github.com/romainfrancois/anagram) (and h/t to Romain for [pointing out](https://twitter.com/romain_francois/status/972754279164514304) some bottle-necks in my cpp code).
+
 ## Installation
 
 Install from github with:
@@ -29,7 +31,7 @@ devtools::install_github("ChrisMuir/anagrams")
 
 ## Example Usage
 
-The exported function `is_anagram` takes as input a string and a character vector, and returns a logical vector with length equal to that of the character vector.
+The exported function `is_anagram` takes as input a string and a character vector, and looks for anagrams of the string in the character vector.
 
 ```{r}
 library(anagrams)
@@ -99,7 +101,8 @@ microbenchmark(
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
 )
 
 
@@ -107,13 +110,27 @@ microbenchmark(
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
 )
+
 
 # Test in which each element is a string with length between two and six chars.
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
+)
+
+
+# Test in which each element is a long string (nchar == 1000).
+test_str <- stringi::stri_rand_strings(1, 1000)
+test_vect <- stringi::stri_rand_strings(100000, 1000)
+microbenchmark(
+  rfn = r_is_anagram(test_str, test_vect), 
+  cpp = is_anagram(test_str, test_vect), 
+  times = 5, 
+  unit = "s"
 )
 ```

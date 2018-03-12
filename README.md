@@ -7,6 +7,8 @@ anagrams
 
 `anagrams` is a super simple R package providing a function for comparing character vectors and determining if strings are [anagrams](https://en.wikipedia.org/wiki/Anagram) of one another. The project was inspired by [this](http://www.programmingr.com/content/simple-anagram-finder-using-r/) blog post on finding anagrams in R. The package uses C++ and [Rcpp](https://CRAN.R-project.org/package=Rcpp) for speed.
 
+If you're interested in anagrams and R, be sure to check out [Romain Francois'](https://github.com/romainfrancois) package [anagram](https://github.com/romainfrancois/anagram) (and h/t to Romain for [pointing out](https://twitter.com/romain_francois/status/972754279164514304) some bottle-necks in my cpp code).
+
 Installation
 ------------
 
@@ -20,7 +22,7 @@ devtools::install_github("ChrisMuir/anagrams")
 Example Usage
 -------------
 
-The exported function `is_anagram` takes as input a string and a character vector, and returns a logical vector with length equal to that of the character vector.
+The exported function `is_anagram` takes as input a string and a character vector, and looks for anagrams of the string in the character vector.
 
 ``` r
 library(anagrams)
@@ -93,51 +95,73 @@ microbenchmark(
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median        uq      max neval
-#>   rfn 20.222370 21.567462 22.892278 22.190613 24.958689 28.23463   100
-#>   cpp  7.383248  7.950132  8.943099  8.223219  8.551839 51.55260   100
+#>  expr      min        lq     mean    median        uq      max neval
+#>   rfn 19.62964 20.736104 22.20028 21.583590 23.341243 29.31049   100
+#>   cpp  7.50128  8.007499  9.13518  8.294149  8.898606 49.45918   100
 
 
 # Test in which each element is the same length as the input string.
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 1892.85678 1937.79792 1970.10930 1958.83845 1994.04560 2145.99600
-#>   cpp   10.56022   10.99661   11.24442   11.13774   11.48285   13.61403
-#>  neval
-#>    100
-#>    100
+#>  expr         min          lq        mean     median          uq
+#>   rfn 1866.858158 1923.963039 1944.140191 1945.30012 1967.639737
+#>   cpp    9.036433    9.144934    9.357407    9.30952    9.438548
+#>         max neval
+#>  2028.33617    25
+#>    10.25524    25
 
 
 # Test in which each element is an anagram of the input string.
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
 )
 #> Unit: milliseconds
-#>  expr         min          lq        mean      median          uq
-#>   rfn 1520.612024 1573.278966 1597.107133 1599.245327 1619.829675
-#>   cpp    8.729989    8.988229    9.166326    9.163079    9.279095
-#>          max neval
-#>  1669.505306   100
-#>     9.905179   100
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 1525.65882 1544.55901 1571.40227 1570.26181 1584.94326 1636.31662
+#>   cpp   11.49238   11.68079   11.92335   11.82779   12.07595   13.01764
+#>  neval
+#>     25
+#>     25
+
 
 # Test in which each element is a string with length between two and six chars.
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
+  cpp = is_anagram("cats", test_vect), 
+  times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq       max
-#>   rfn 420.461294 449.642751 457.309752 456.468644 462.623366 524.35130
-#>   cpp   8.213505   8.663641   8.932139   8.802751   9.172426  10.94071
+#>  expr        min         lq       mean     median         uq        max
+#>   rfn 397.009166 435.781294 437.334173 440.554268 445.260529 453.118837
+#>   cpp   7.952515   8.122233   8.355262   8.456901   8.536078   8.672439
 #>  neval
-#>    100
-#>    100
+#>     25
+#>     25
+
+
+# Test in which each element is a long string (nchar == 1000).
+test_str <- stringi::stri_rand_strings(1, 1000)
+test_vect <- stringi::stri_rand_strings(100000, 1000)
+microbenchmark(
+  rfn = r_is_anagram(test_str, test_vect), 
+  cpp = is_anagram(test_str, test_vect), 
+  times = 5, 
+  unit = "s"
+)
+#> Unit: seconds
+#>  expr          min           lq         mean       median           uq
+#>   rfn 279.34702874 279.78411828 280.63786255 279.83182677 281.90004538
+#>   cpp   0.07564841   0.07676605   0.07784931   0.07710438   0.07770884
+#>           max neval
+#>  282.32629355     5
+#>    0.08201885     5
 ```
