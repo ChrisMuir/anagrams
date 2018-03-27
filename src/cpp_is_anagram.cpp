@@ -1,26 +1,17 @@
 #include <Rcpp.h>
 #include"anagrams.h"
 
-//using namespace std;
 using namespace Rcpp;
 
 
-// Main function, passes input args "X" and "terms" to one of the two
-// anagram finding functions, depending on whether arg "any_len" is TRUE or
-// FALSE. If arg "value" is TRUE, returns a character vector of matching
-// anagrams, otherwise returns a logical vector indicating which elements of
-// "terms" are anagrams to "x".
+// If arg "value" is TRUE, cpp_is_anagram() returns a character vector of
+// matching anagrams, otherwise returns a logical vector indicating which
+// elements of "terms" are anagrams to "x".
 //[[Rcpp::export]]
 SEXP cpp_is_anagram(std::string x, StringVector terms,
                     bool value, bool any_len) {
-  // If any_len is true, get result from cpp_is_anagram_any_len,
-  // otherwise get result from cpp_is_anagram_same_len.
-  //LogicalVector ana;
-  //if(any_len) {
-  //  ana = is_anagram_any_len(x, terms);
-  //} else {
-  //  ana = is_anagram_same_len(x, terms);
-  //}
+
+  // Get logical vector indicating which elements of terms are anagrams of x.
   LogicalVector ana = get_anagrams(x, terms, any_len);
 
   // If value is TRUE, subset terms by ana, and return subset as a char vector.
