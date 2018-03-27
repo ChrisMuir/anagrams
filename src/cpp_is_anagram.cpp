@@ -1,8 +1,7 @@
 #include <Rcpp.h>
-#include <tr1/unordered_map>
-#include"anagrams_header.h"
+#include"anagrams.h"
 
-using namespace std;
+//using namespace std;
 using namespace Rcpp;
 
 
@@ -63,7 +62,7 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
   // create unordered_map containing the unique chars in x, and the count for
   // each.
   std::string::iterator x_char;
-  std::tr1::unordered_map<char, int> x_counts;
+  std::unordered_map<char, int> x_counts;
   for(x_char = x_begin; x_char != x_end; ++x_char) {
     x_counts[*x_char]++;
   }
