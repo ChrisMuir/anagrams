@@ -101,8 +101,8 @@ microbenchmark(
 )
 #> Unit: milliseconds
 #>  expr       min        lq      mean    median       uq      max neval
-#>   rfn 19.460292 20.441574 22.627882 21.445946 23.81209 64.69597   100
-#>   cpp  7.406341  7.754939  8.516918  8.121682  8.68985 15.79909   100
+#>   rfn 19.201113 19.854323 21.132017 20.427255 22.80952 25.71157   100
+#>   cpp  7.250545  7.534812  8.533492  7.808082  8.21038 51.23034   100
 
 
 # Test in which each element is the same length as the input string.
@@ -113,9 +113,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median        uq       max
-#>   rfn 258.287917 292.260310 295.184739 297.383716 300.36531 309.66823
-#>   cpp   8.841422   9.006374   9.255606   9.240972   9.39896  10.04117
+#>  expr       min         lq       mean     median         uq       max
+#>   rfn 254.71588 292.440336 296.159140 295.916785 298.499563 342.30927
+#>   cpp   9.07821   9.152255   9.433347   9.231799   9.408846  12.18993
 #>  neval
 #>     25
 #>     25
@@ -129,9 +129,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median        uq       max neval
-#>   rfn 516.84196 551.43567 572.57919 572.64042 587.10047 651.38112    25
-#>   cpp  11.47112  11.82375  12.13163  12.00227  12.34573  13.21888    25
+#>  expr      min        lq      mean    median        uq       max neval
+#>   rfn 522.7694 553.36866 563.77901 565.70155 573.23215 606.76353    25
+#>   cpp  11.9546  12.15144  12.33417  12.27058  12.46412  12.89776    25
 
 
 # Test in which each element is a string with length between two and six chars.
@@ -142,9 +142,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr      min        lq       mean     median         uq       max neval
-#>   rfn 81.29563 97.253442 105.877772 101.809779 109.863098 156.34361    25
-#>   cpp  8.33337  8.593262   9.068279   8.810265   9.404459  10.31793    25
+#>  expr       min        lq      mean    median       uq        max neval
+#>   rfn 81.448028 83.884181 93.845564 89.353613 98.42999 133.813600    25
+#>   cpp  8.166577  8.422802  8.654262  8.556596  8.79486   9.568667    25
 
 
 # Test in which each element is a long string (nchar == 1000).
@@ -156,9 +156,9 @@ microbenchmark(
   times = 25
 )
 #> Unit: milliseconds
-#>  expr        min         lq      mean     median         uq        max
-#>   rfn 3519.91189 3648.74703 3745.9833 3661.02971 3754.12563 5180.80744
-#>   cpp   72.40326   74.31926   76.2475   75.23493   76.10331   87.80353
+#>  expr       min         lq       mean     median         uq        max
+#>   rfn 3432.1515 3494.84966 3601.69453 3541.50717 3567.26016 4978.42212
+#>   cpp   78.0053   78.89677   79.86226   79.99462   80.82048   81.86261
 #>  neval
 #>     25
 #>     25
