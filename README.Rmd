@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 
 If you're interested in anagrams and R, be sure to check out [Romain Francois'](https://github.com/romainfrancois) package [anagram](https://github.com/romainfrancois/anagram) (and h/t to Romain for [pointing out](https://twitter.com/romain_francois/status/972754279164514304) some bottle-necks in my cpp code).
 
+Also, thank you to [Mark van der Loo](https://github.com/markvanderloo) for pointing out that the [stringdist](https://github.com/markvanderloo/stringdist) package can be used to concisely determine same-length anagrams (and it's faster than the base R function I defined below!) I included the `stringdist` solution in the benchmarks below.
+
 ## Installation
 
 Install from github with:
@@ -54,7 +56,7 @@ is_anagram("STAc", c("catS are great", "tacs", "frogs", "CaTS", "ts"), ignore_ca
 
 ## Benchmarks
 
-Let's create a simple, pure R version of `is_anagram` that searches for same length anagrams, and compare speeds.
+Let's create a simple, base R version of `is_anagram` that searches for same-length anagrams, and compare speeds.
 ```{r}
 r_is_anagram <- function(string, terms) {
   out <- rep(FALSE, length(terms))
@@ -87,6 +89,28 @@ identical(
   is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
 )
 ```
+And for completeness, here is a similar function that uses `stringdist::stringdist()` to find same-length anagrams.
+```{r}
+library(stringdist)
+
+sd_is_anagram <- function(string, terms) {
+  out <- rep(FALSE, length(terms))
+  terms_to_insp <- which(nchar(terms) == nchar(string))
+  if (length(terms_to_insp) == 0) {
+    return(out)
+  }
+  
+  out[terms_to_insp] <- stringdist(string, terms[terms_to_insp], method="qgram", q=1) == 0
+  
+  out
+}
+
+# Test to make sure its output is identical to that of pkg function is_anagram.
+identical(
+  sd_is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts")), 
+  is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
+)
+```
 
 Now we'll compare speeds.
 
@@ -98,6 +122,7 @@ library(stringi)
 test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect)
 )
 
@@ -106,6 +131,7 @@ microbenchmark(
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
@@ -115,6 +141,7 @@ microbenchmark(
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
@@ -124,6 +151,7 @@ microbenchmark(
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
@@ -134,6 +162,7 @@ test_str <- stringi::stri_rand_strings(1, 1000)
 test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   rfn = r_is_anagram(test_str, test_vect), 
+  s_d = sd_is_anagram(test_str, test_vect), 
   cpp = is_anagram(test_str, test_vect), 
   times = 25
 )

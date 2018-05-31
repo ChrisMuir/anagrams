@@ -9,6 +9,8 @@ anagrams
 
 If you're interested in anagrams and R, be sure to check out [Romain Francois'](https://github.com/romainfrancois) package [anagram](https://github.com/romainfrancois/anagram) (and h/t to Romain for [pointing out](https://twitter.com/romain_francois/status/972754279164514304) some bottle-necks in my cpp code).
 
+Also, thank you to [Mark van der Loo](https://github.com/markvanderloo) for pointing out that the [stringdist](https://github.com/markvanderloo/stringdist) package can be used to concisely determine same-length anagrams (and it's faster than the base R function I defined below!) I included the `stringdist` solution in the benchmarks below.
+
 Installation
 ------------
 
@@ -51,7 +53,7 @@ is_anagram("STAc", c("catS are great", "tacs", "frogs", "CaTS", "ts"), ignore_ca
 Benchmarks
 ----------
 
-Let's create a simple, pure R version of `is_anagram` that searches for same length anagrams, and compare speeds.
+Let's create a simple, base R version of `is_anagram` that searches for same-length anagrams, and compare speeds.
 
 ``` r
 r_is_anagram <- function(string, terms) {
@@ -87,6 +89,31 @@ identical(
 #> [1] TRUE
 ```
 
+And for completeness, here is a similar function that uses `stringdist::stringdist()` to find same-length anagrams.
+
+``` r
+library(stringdist)
+
+sd_is_anagram <- function(string, terms) {
+  out <- rep(FALSE, length(terms))
+  terms_to_insp <- which(nchar(terms) == nchar(string))
+  if (length(terms_to_insp) == 0) {
+    return(out)
+  }
+  
+  out[terms_to_insp] <- stringdist(string, terms[terms_to_insp], method="qgram", q=1) == 0
+  
+  out
+}
+
+# Test to make sure its output is identical to that of pkg function is_anagram.
+identical(
+  sd_is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts")), 
+  is_anagram("stac", c("cats are great", "tacs", "frogs", "cats", "ts"))
+)
+#> [1] TRUE
+```
+
 Now we'll compare speeds.
 
 ``` r
@@ -97,54 +124,59 @@ library(stringi)
 test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect)
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median       uq      max neval
-#>   rfn 19.201113 19.854323 21.132017 20.427255 22.80952 25.71157   100
-#>   cpp  7.250545  7.534812  8.533492  7.808082  8.21038 51.23034   100
+#>  expr       min        lq      mean    median        uq     max neval
+#>   rfn 19.249852 20.109983 20.908096 20.466095 20.841452 31.1249   100
+#>   s_d 19.395376 20.052616 20.731909 20.364009 20.768690 31.8100   100
+#>   cpp  7.030237  7.391481  7.740827  7.559549  7.806793 12.1397   100
 
 
 # Test in which each element is the same length as the input string.
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
 #> Unit: milliseconds
-#>  expr       min         lq       mean     median         uq       max
-#>   rfn 254.71588 292.440336 296.159140 295.916785 298.499563 342.30927
-#>   cpp   9.07821   9.152255   9.433347   9.231799   9.408846  12.18993
-#>  neval
-#>     25
-#>     25
+#>  expr        min        lq      mean    median        uq       max neval
+#>   rfn 242.877299 247.89329 269.76032 254.67610 292.14797 348.22015    25
+#>   s_d  33.207690  33.45365  34.14555  33.91148  34.72671  35.76261    25
+#>   cpp   9.688891  10.24349  10.35735  10.36226  10.52648  11.05799    25
 
 
 # Test in which each element is an anagram of the input string.
 test_vect <- rep("tacs", 100000)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
 #> Unit: milliseconds
-#>  expr      min        lq      mean    median        uq       max neval
-#>   rfn 522.7694 553.36866 563.77901 565.70155 573.23215 606.76353    25
-#>   cpp  11.9546  12.15144  12.33417  12.27058  12.46412  12.89776    25
+#>  expr       min        lq      mean    median        uq       max neval
+#>   rfn 498.08271 514.15047 530.59435 527.63801 554.85942 562.35665    25
+#>   s_d  24.30837  24.82668  24.98811  24.91062  25.18444  25.76727    25
+#>   cpp  12.88675  13.15507  13.38043  13.36585  13.54876  13.96114    25
 
 
 # Test in which each element is a string with length between two and six chars.
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   rfn = r_is_anagram("cats", test_vect), 
+  s_d = sd_is_anagram("cats", test_vect), 
   cpp = is_anagram("cats", test_vect), 
   times = 25
 )
 #> Unit: milliseconds
-#>  expr       min        lq      mean    median       uq        max neval
-#>   rfn 81.448028 83.884181 93.845564 89.353613 98.42999 133.813600    25
-#>   cpp  8.166577  8.422802  8.654262  8.556596  8.79486   9.568667    25
+#>  expr       min        lq       mean    median         uq       max neval
+#>   rfn 78.841366 86.045352 100.081780 93.270599 101.578661 149.35048    25
+#>   s_d 23.721873 24.174574  24.754133 24.475152  25.465228  26.45897    25
+#>   cpp  8.417297  8.735837   9.002883  8.967135   9.140885  10.39048    25
 
 
 # Test in which each element is a long string (nchar == 1000).
@@ -152,14 +184,17 @@ test_str <- stringi::stri_rand_strings(1, 1000)
 test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   rfn = r_is_anagram(test_str, test_vect), 
+  s_d = sd_is_anagram(test_str, test_vect), 
   cpp = is_anagram(test_str, test_vect), 
   times = 25
 )
 #> Unit: milliseconds
-#>  expr       min         lq       mean     median         uq        max
-#>   rfn 3432.1515 3494.84966 3601.69453 3541.50717 3567.26016 4978.42212
-#>   cpp   78.0053   78.89677   79.86226   79.99462   80.82048   81.86261
+#>  expr       min         lq       mean     median        uq        max
+#>   rfn 3632.4274 3742.61466 3863.15088 3812.22093 3888.8076 5154.15973
+#>   s_d 1479.7163 1508.69643 1535.97471 1522.16345 1551.4669 1635.41372
+#>   cpp   77.2626   79.77023   80.80246   80.41354   81.3259   89.36821
 #>  neval
+#>     25
 #>     25
 #>     25
 ```
