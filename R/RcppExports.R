@@ -5,7 +5,3 @@ cpp_is_anagram <- function(x, terms, value, any_len) {
     .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', x, terms, value, any_len)
 }
 
-get_anagrams <- function(x, terms, any_len) {
-    .Call('_anagrams_get_anagrams', PACKAGE = 'anagrams', x, terms, any_len)
-}
-

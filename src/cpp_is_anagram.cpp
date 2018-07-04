@@ -8,8 +8,8 @@ using namespace Rcpp;
 // matching anagrams, otherwise returns a logical vector indicating which
 // elements of "terms" are anagrams to "x".
 //[[Rcpp::export]]
-SEXP cpp_is_anagram(std::string x, StringVector terms,
-                    bool value, bool any_len) {
+SEXP cpp_is_anagram(std::string &x, const StringVector &terms,
+                    const bool &value, const bool &any_len) {
 
   // Get logical vector indicating which elements of terms are anagrams of x.
   LogicalVector ana = get_anagrams(x, terms, any_len);
@@ -41,8 +41,8 @@ SEXP cpp_is_anagram(std::string x, StringVector terms,
 // Look for anagrams of x within terms. Use arg any_len to choose between
 // looking for anagram sub-strings within terms (TRUE), or same length
 // anagrams only (FALSE).
-//[[Rcpp::export]]
-LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
+LogicalVector get_anagrams(std::string &x, const StringVector &terms,
+                           const bool &any_len) {
   // Initialize variables.
   int terms_len = terms.size();
   int x_len = x.size();
@@ -58,15 +58,16 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
     x_counts[*x_char]++;
   }
 
-  // Initialize loop variables.
-  StringVector::iterator terms_end = terms.end();
-  StringVector::iterator terms_iter;
-  int i = 0;
-
   // Iterate over the strings in terms.
-  for(terms_iter = terms.begin(); terms_iter != terms_end; ++terms_iter) {
-    // Cast *terms_iter as an std::string.
-    std::string curr_term = as<std::string>(*terms_iter);
+  for(int i = 0; i < terms_len; ++i) {
+    // If terms[i] is NA, append false to output and move to the next term.
+    if(StringVector::is_na(terms[i])) {
+      out[i] = false;
+      continue;
+    }
+
+    // Cast terms[i] as an std::string.
+    std::string curr_term = as<std::string>(terms[i]);
 
     // Compare size of curr_term to that of x.
     int curr_term_len = curr_term.size();
@@ -75,7 +76,6 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
       // x, append FALSE to the output and move on to the next string in terms.
       if(curr_term_len < x_len) {
         out[i] = false;
-        i++;
         continue;
       }
     } else {
@@ -83,7 +83,6 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
       // length of x, return FALSE and move on to the next iteration.
       if(curr_term_len != x_len) {
         out[i] = false;
-        i++;
         continue;
       }
     }
@@ -92,7 +91,6 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
     // string in terms.
     if(curr_term == x) {
       out[i] = true;
-      i++;
       continue;
     }
 
@@ -127,7 +125,6 @@ LogicalVector get_anagrams(std::string x, StringVector terms, bool any_len) {
     }
 
     out[i] = anagram;
-    i++;
   }
 
   return(out);
