@@ -47,5 +47,6 @@ is_anagram <- function(string, terms, value = FALSE, any_len = FALSE,
     terms <- tolower(terms)
   }
 
-  .Call('_anagrams_cpp_is_anagram', PACKAGE = 'anagrams', string, terms, value, any_len)
+  if (value) return(get_anagrams_character(string, terms, any_len))
+  get_anagrams_logical(string, terms, any_len)
 }

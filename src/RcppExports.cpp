@@ -5,23 +5,36 @@
 
 using namespace Rcpp;
 
-// cpp_is_anagram
-SEXP cpp_is_anagram(std::string& x, const StringVector& terms, const bool& value, const bool& any_len);
-RcppExport SEXP _anagrams_cpp_is_anagram(SEXP xSEXP, SEXP termsSEXP, SEXP valueSEXP, SEXP any_lenSEXP) {
+// get_anagrams_logical
+LogicalVector get_anagrams_logical(std::string& x, const StringVector& terms, const bool& any_len);
+RcppExport SEXP _anagrams_get_anagrams_logical(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type value(valueSEXP);
     Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_is_anagram(x, terms, value, any_len));
+    rcpp_result_gen = Rcpp::wrap(get_anagrams_logical(x, terms, any_len));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_anagrams_character
+CharacterVector get_anagrams_character(std::string& x, const StringVector& terms, const bool& any_len);
+RcppExport SEXP _anagrams_get_anagrams_character(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_anagrams_character(x, terms, any_len));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_anagrams_cpp_is_anagram", (DL_FUNC) &_anagrams_cpp_is_anagram, 4},
+    {"_anagrams_get_anagrams_logical", (DL_FUNC) &_anagrams_get_anagrams_logical, 3},
+    {"_anagrams_get_anagrams_character", (DL_FUNC) &_anagrams_get_anagrams_character, 3},
     {NULL, NULL, 0}
 };
 
