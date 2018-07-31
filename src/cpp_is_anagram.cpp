@@ -22,6 +22,7 @@ LogicalVector get_anagrams_logical(std::string &x,
   // each.
   std::string::iterator x_char;
   std::unordered_map<char, int> x_counts;
+  x_counts.reserve(x_len);
   for(x_char = x_begin; x_char != x_end; ++x_char) {
     x_counts[*x_char]++;
   }
@@ -123,6 +124,7 @@ CharacterVector get_anagrams_character(std::string &x,
   // each.
   std::string::iterator x_char;
   std::unordered_map<char, int> x_counts;
+  x_counts.reserve(x_len);
   for(x_char = x_begin; x_char != x_end; ++x_char) {
     x_counts[*x_char]++;
   }
