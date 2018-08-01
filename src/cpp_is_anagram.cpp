@@ -7,20 +7,29 @@ using namespace Rcpp;
 // length as terms. Use arg any_len to choose between looking for anagram
 // sub-strings within terms (TRUE), or same length anagrams only (FALSE).
 // [[Rcpp::export]]
-LogicalVector get_ana_logical(std::string &x,
+LogicalVector get_ana_logical(const StringVector &x_,
                               const StringVector &terms,
                               const bool &any_len,
                               const bool &ignore_spaces) {
+
+  // Initialize output vector.
+  int terms_len = terms.size();
+  LogicalVector out(terms_len);
+
+  // If x is NA, return logical vector of FALSE values (same len as arg
+  // "terms").
+  if(StringVector::is_na(x_[0])) {
+    return out;
+  }
+  std::string x = as<std::string>(x_[0]);
 
   // If ignore_spaces is true, remove spaces from x.
   if(ignore_spaces) {
     remove_spaces(x);
   }
 
-  // Initialize variables.
-  int terms_len = terms.size();
+  // Initialize x variables.
   int x_len = x.size();
-  LogicalVector out(terms_len);
   std::string::iterator x_begin = x.begin();
   std::string::iterator x_end = x.end();
 
@@ -44,7 +53,6 @@ LogicalVector get_ana_logical(std::string &x,
   for(int i = 0; i < terms_len; ++i) {
     // If terms[i] is NA, append false to output and move to the next term.
     if(StringVector::is_na(terms[i])) {
-      //out[i] = false;
       continue;
     }
 
@@ -62,14 +70,12 @@ LogicalVector get_ana_logical(std::string &x,
       // If any_len == TRUE and length of curr_term is less than the length of
       // x, append FALSE to the output and move on to the next string in terms.
       if(curr_term_len < x_len) {
-        //out[i] = false;
         continue;
       }
     } else {
       // If any_len == FALSE and length of terms_iter is not equal to the
       // length of x, return FALSE and move on to the next iteration.
       if(curr_term_len != x_len) {
-        //out[i] = false;
         continue;
       }
     }
@@ -121,20 +127,28 @@ LogicalVector get_ana_logical(std::string &x,
 // the anagram strings. Use arg any_len to choose between looking for anagram
 // sub-strings within terms (TRUE), or same length anagrams only (FALSE).
 // [[Rcpp::export]]
-CharacterVector get_ana_character(std::string &x,
+CharacterVector get_ana_character(const StringVector &x_,
                                   const StringVector &terms,
                                   const bool &any_len,
                                   const bool &ignore_spaces) {
+
+  // Initialize output vector.
+  std::vector<std::string> out;
+
+  // If x is NA, return empty CharacterVector.
+  if(StringVector::is_na(x_[0])) {
+    return wrap(out);
+  }
+  std::string x = as<std::string>(x_[0]);
 
   // If ignore_spaces is true, remove spaces from x.
   if(ignore_spaces) {
     remove_spaces(x);
   }
 
-  // Initialize variables.
+  // Initialize x and terms variables.
   int terms_len = terms.size();
   int x_len = x.size();
-  std::vector<std::string> out;
   std::string::iterator x_begin = x.begin();
   std::string::iterator x_end = x.end();
 

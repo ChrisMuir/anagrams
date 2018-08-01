@@ -6,30 +6,30 @@
 using namespace Rcpp;
 
 // get_ana_logical
-LogicalVector get_ana_logical(std::string& x, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
-RcppExport SEXP _anagrams_get_ana_logical(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
+LogicalVector get_ana_logical(const StringVector& x_, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
+RcppExport SEXP _anagrams_get_ana_logical(SEXP x_SEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const StringVector& >::type x_(x_SEXP);
     Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
     Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
     Rcpp::traits::input_parameter< const bool& >::type ignore_spaces(ignore_spacesSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_ana_logical(x, terms, any_len, ignore_spaces));
+    rcpp_result_gen = Rcpp::wrap(get_ana_logical(x_, terms, any_len, ignore_spaces));
     return rcpp_result_gen;
 END_RCPP
 }
 // get_ana_character
-CharacterVector get_ana_character(std::string& x, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
-RcppExport SEXP _anagrams_get_ana_character(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
+CharacterVector get_ana_character(const StringVector& x_, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
+RcppExport SEXP _anagrams_get_ana_character(SEXP x_SEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const StringVector& >::type x_(x_SEXP);
     Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
     Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
     Rcpp::traits::input_parameter< const bool& >::type ignore_spaces(ignore_spacesSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_ana_character(x, terms, any_len, ignore_spaces));
+    rcpp_result_gen = Rcpp::wrap(get_ana_character(x_, terms, any_len, ignore_spaces));
     return rcpp_result_gen;
 END_RCPP
 }
