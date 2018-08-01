@@ -5,36 +5,38 @@
 
 using namespace Rcpp;
 
-// get_anagrams_logical
-LogicalVector get_anagrams_logical(std::string& x, const StringVector& terms, const bool& any_len);
-RcppExport SEXP _anagrams_get_anagrams_logical(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP) {
+// get_ana_logical
+LogicalVector get_ana_logical(std::string& x, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
+RcppExport SEXP _anagrams_get_ana_logical(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
     Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_anagrams_logical(x, terms, any_len));
+    Rcpp::traits::input_parameter< const bool& >::type ignore_spaces(ignore_spacesSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_ana_logical(x, terms, any_len, ignore_spaces));
     return rcpp_result_gen;
 END_RCPP
 }
-// get_anagrams_character
-CharacterVector get_anagrams_character(std::string& x, const StringVector& terms, const bool& any_len);
-RcppExport SEXP _anagrams_get_anagrams_character(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP) {
+// get_ana_character
+CharacterVector get_ana_character(std::string& x, const StringVector& terms, const bool& any_len, const bool& ignore_spaces);
+RcppExport SEXP _anagrams_get_ana_character(SEXP xSEXP, SEXP termsSEXP, SEXP any_lenSEXP, SEXP ignore_spacesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const StringVector& >::type terms(termsSEXP);
     Rcpp::traits::input_parameter< const bool& >::type any_len(any_lenSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_anagrams_character(x, terms, any_len));
+    Rcpp::traits::input_parameter< const bool& >::type ignore_spaces(ignore_spacesSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_ana_character(x, terms, any_len, ignore_spaces));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_anagrams_get_anagrams_logical", (DL_FUNC) &_anagrams_get_anagrams_logical, 3},
-    {"_anagrams_get_anagrams_character", (DL_FUNC) &_anagrams_get_anagrams_character, 3},
+    {"_anagrams_get_ana_logical", (DL_FUNC) &_anagrams_get_ana_logical, 4},
+    {"_anagrams_get_ana_character", (DL_FUNC) &_anagrams_get_ana_character, 4},
     {NULL, NULL, 0}
 };
 

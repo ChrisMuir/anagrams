@@ -1,16 +1,22 @@
 #include <Rcpp.h>
 using namespace Rcpp;
-
-// [[Rcpp::plugins(cpp11)]]
+#include "anagrams.h"
 
 
 // Look for anagrams of x within terms, return a logical vector the same
 // length as terms. Use arg any_len to choose between looking for anagram
 // sub-strings within terms (TRUE), or same length anagrams only (FALSE).
 // [[Rcpp::export]]
-LogicalVector get_anagrams_logical(std::string &x,
-                                   const StringVector &terms,
-                                   const bool &any_len) {
+LogicalVector get_ana_logical(std::string &x,
+                              const StringVector &terms,
+                              const bool &any_len,
+                              const bool &ignore_spaces) {
+
+  // If ignore_spaces is true, remove spaces from x.
+  if(ignore_spaces) {
+    remove_spaces(x);
+  }
+
   // Initialize variables.
   int terms_len = terms.size();
   int x_len = x.size();
@@ -44,6 +50,11 @@ LogicalVector get_anagrams_logical(std::string &x,
 
     // Cast terms[i] as an std::string.
     curr_term = as<std::string>(terms[i]);
+
+    // If ignore_spaces is true, remove spaces from curr_term.
+    if(ignore_spaces) {
+      remove_spaces(curr_term);
+    }
 
     // Compare size of curr_term to that of x.
     curr_term_len = curr_term.size();
@@ -110,9 +121,16 @@ LogicalVector get_anagrams_logical(std::string &x,
 // the anagram strings. Use arg any_len to choose between looking for anagram
 // sub-strings within terms (TRUE), or same length anagrams only (FALSE).
 // [[Rcpp::export]]
-CharacterVector get_anagrams_character(std::string &x,
-                                       const StringVector &terms,
-                                       const bool &any_len) {
+CharacterVector get_ana_character(std::string &x,
+                                  const StringVector &terms,
+                                  const bool &any_len,
+                                  const bool &ignore_spaces) {
+
+  // If ignore_spaces is true, remove spaces from x.
+  if(ignore_spaces) {
+    remove_spaces(x);
+  }
+
   // Initialize variables.
   int terms_len = terms.size();
   int x_len = x.size();
@@ -146,6 +164,11 @@ CharacterVector get_anagrams_character(std::string &x,
     // Cast terms[i] as an std::string.
     curr_term = as<std::string>(terms[i]);
 
+    // If ignore_spaces is true, remove spaces from curr_term.
+    if(ignore_spaces) {
+      remove_spaces(curr_term);
+    }
+
     // Compare size of curr_term to that of x.
     curr_term_len = curr_term.size();
     if(any_len) {
@@ -165,7 +188,11 @@ CharacterVector get_anagrams_character(std::string &x,
     // If curr_term == x, add curr_term to output and move on to the next
     // string in terms.
     if(curr_term == x) {
-      out.push_back(curr_term);
+      if(!ignore_spaces) {
+        out.push_back(curr_term);
+      } else {
+        out.push_back(as<std::string>(terms[i]));
+      }
       continue;
     }
 
@@ -199,7 +226,11 @@ CharacterVector get_anagrams_character(std::string &x,
     }
 
     if(anagram) {
-      out.push_back(curr_term);
+      if(!ignore_spaces) {
+        out.push_back(curr_term);
+      } else {
+        out.push_back(as<std::string>(terms[i]));
+      }
     }
   }
 
