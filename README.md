@@ -132,19 +132,15 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr       min        lq      mean    median       uq       max
-#>    anagrams_pkg  2.957764  3.409829  4.078948  3.801082  4.48639  7.423282
-#>  stringdist_pkg 15.389827 16.377030 18.577019 17.426925 20.54258 30.622117
-#>          base_r 15.183233 16.304469 17.416938 16.612113 18.13074 26.212652
-#>  neval
-#>    100
-#>    100
-#>    100
+#>            expr       min        lq      mean    median        uq       max neval
+#>    anagrams_pkg  3.100996  3.468451  3.868257  3.723464  4.158105  5.544518   100
+#>  stringdist_pkg 15.018863 15.784736 16.651755 16.271574 16.939462 24.624208   100
+#>          base_r 15.097497 15.615902 16.911802 16.227311 16.908727 31.820793   100
 
 autoplot.microbenchmark(mb)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 
@@ -161,19 +157,15 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr        min         lq       mean     median         uq
-#>    anagrams_pkg   4.087133   4.569417   5.599958   4.780649   6.400926
-#>  stringdist_pkg  31.278478  34.425687  43.078357  43.818700  50.396274
-#>          base_r 226.697082 266.585187 306.877894 320.374032 343.670839
-#>         max neval
-#>    8.476718    25
-#>   55.042446    25
-#>  378.102585    25
+#>            expr       min         lq       mean     median         uq        max neval
+#>    anagrams_pkg   4.14881   5.391084   7.021752   6.741645   9.161284   9.275218    25
+#>  stringdist_pkg  30.69577  31.381148  39.860443  39.009806  46.984034  57.092259    25
+#>          base_r 237.90480 255.272808 290.234094 274.866043 327.326344 356.681086    25
 
 autoplot.microbenchmark(mb)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-2.png)
 
 ``` r
 
@@ -190,19 +182,15 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr       min         lq      mean    median        uq
-#>    anagrams_pkg   6.22285   7.859184  10.09603  11.90370  12.20088
-#>  stringdist_pkg  20.26465  24.614183  31.34636  33.67018  39.22784
-#>          base_r 529.31476 582.450234 616.83824 610.96686 666.67961
-#>        max neval
-#>   12.52686    25
-#>   41.83024    25
-#>  711.63826    25
+#>            expr        min         lq      mean     median        uq       max neval
+#>    anagrams_pkg   6.031186   6.108313   8.51613   6.577749  11.81450  13.53926    25
+#>  stringdist_pkg  20.083868  20.521320  28.48446  23.701445  39.59214  41.03456    25
+#>          base_r 508.361398 545.118752 594.11975 608.963430 625.35459 689.77246    25
 
 autoplot.microbenchmark(mb)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-3.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-3.png)
 
 ``` r
 
@@ -219,19 +207,15 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr       min         lq       mean     median         uq
-#>    anagrams_pkg  3.425526   4.889977   5.393258   5.657923   5.980561
-#>  stringdist_pkg 21.244149  26.281611  32.153515  34.469034  36.891975
-#>          base_r 84.169148 108.293165 134.501019 141.014277 160.677025
-#>        max neval
-#>    6.53689    25
-#>   39.95555    25
-#>  168.68358    25
+#>            expr       min        lq       mean     median         uq        max neval
+#>    anagrams_pkg  3.015511  3.975234   5.301403   5.170354   6.839706   7.652389    25
+#>  stringdist_pkg 19.461361 21.731648  30.679704  31.180937  36.314394  40.047197    25
+#>          base_r 82.909623 93.059026 122.541916 125.979663 146.103838 188.736725    25
 
 autoplot.microbenchmark(mb)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-4.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-4.png)
 
 ``` r
 
@@ -249,16 +233,12 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr        min         lq       mean     median         uq
-#>    anagrams_pkg   67.89607   69.44413   74.34844   72.27528   80.50824
-#>  stringdist_pkg 2137.45272 2193.71352 2232.09559 2222.14421 2254.58533
-#>          base_r 5017.80263 5317.17637 5569.97980 5585.67973 5662.55602
-#>        max neval
-#>    85.3776    25
-#>  2439.8614    25
-#>  7100.0503    25
+#>            expr        min         lq       mean     median        uq        max neval
+#>    anagrams_pkg   69.80629   71.13075   77.00845   74.26053   79.6308   95.19816    25
+#>  stringdist_pkg 2082.33845 2105.74981 2118.05681 2113.41687 2129.8930 2155.05893    25
+#>          base_r 5233.31362 5304.26535 5406.09315 5360.12743 5406.0963 6732.25244    25
 
 autoplot.microbenchmark(mb)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-5.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-5.png)
