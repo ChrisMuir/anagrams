@@ -35,12 +35,9 @@ is_anagram <- function(string, terms, value = FALSE, any_len = FALSE,
   stopifnot(is.logical(ignore_spaces))
   stopifnot(is.logical(ignore_case))
 
-  # If ignore_case is TRUE, make all input strings lower-case.
-  if (ignore_case) {
-    string <- tolower(string)
-    terms <- tolower(terms)
+  if (value) {
+    return(get_ana_character(string, terms, any_len, ignore_spaces,
+                             ignore_case))
   }
-
-  if (value) return(get_ana_character(string, terms, any_len, ignore_spaces))
-  get_ana_logical(string, terms, any_len, ignore_spaces)
+  get_ana_logical(string, terms, any_len, ignore_spaces, ignore_case)
 }

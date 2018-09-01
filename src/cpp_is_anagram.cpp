@@ -10,7 +10,8 @@ using namespace Rcpp;
 LogicalVector get_ana_logical(const StringVector &x_,
                               const StringVector &terms,
                               const bool &any_len,
-                              const bool &ignore_spaces) {
+                              const bool &ignore_spaces,
+                              const bool &ignore_case) {
 
   // Initialize output vector.
   int terms_len = terms.size();
@@ -26,6 +27,11 @@ LogicalVector get_ana_logical(const StringVector &x_,
   // If ignore_spaces is true, remove spaces from x.
   if(ignore_spaces) {
     remove_spaces(x);
+  }
+
+  // If ignore_case is true, normalize case of x.
+  if(ignore_case) {
+    to_lower(x);
   }
 
   // Initialize x variables.
@@ -62,6 +68,11 @@ LogicalVector get_ana_logical(const StringVector &x_,
     // If ignore_spaces is true, remove spaces from curr_term.
     if(ignore_spaces) {
       remove_spaces(curr_term);
+    }
+
+    // If ignore_case is true, normalize case in curr_term.
+    if(ignore_case) {
+      to_lower(curr_term);
     }
 
     // Compare size of curr_term to that of x.
@@ -130,7 +141,8 @@ LogicalVector get_ana_logical(const StringVector &x_,
 CharacterVector get_ana_character(const StringVector &x_,
                                   const StringVector &terms,
                                   const bool &any_len,
-                                  const bool &ignore_spaces) {
+                                  const bool &ignore_spaces,
+                                  const bool &ignore_case) {
 
   // Initialize output vector.
   std::vector<std::string> out;
@@ -144,6 +156,11 @@ CharacterVector get_ana_character(const StringVector &x_,
   // If ignore_spaces is true, remove spaces from x.
   if(ignore_spaces) {
     remove_spaces(x);
+  }
+
+  // If ignore_case is true, normalize case of x.
+  if(ignore_case) {
+    to_lower(x);
   }
 
   // Initialize x and terms variables.
@@ -183,6 +200,11 @@ CharacterVector get_ana_character(const StringVector &x_,
       remove_spaces(curr_term);
     }
 
+    // If ignore_case is true, normalize case in curr_term.
+    if(ignore_case) {
+      to_lower(curr_term);
+    }
+
     // Compare size of curr_term to that of x.
     curr_term_len = curr_term.size();
     if(any_len) {
@@ -202,7 +224,7 @@ CharacterVector get_ana_character(const StringVector &x_,
     // If curr_term == x, add curr_term to output and move on to the next
     // string in terms.
     if(curr_term == x) {
-      if(!ignore_spaces) {
+      if(!ignore_spaces && !ignore_case) {
         out.push_back(curr_term);
       } else {
         out.push_back(as<std::string>(terms[i]));
@@ -240,7 +262,7 @@ CharacterVector get_ana_character(const StringVector &x_,
     }
 
     if(anagram) {
-      if(!ignore_spaces) {
+      if(!ignore_spaces && !ignore_case) {
         out.push_back(curr_term);
       } else {
         out.push_back(as<std::string>(terms[i]));
