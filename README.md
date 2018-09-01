@@ -120,89 +120,145 @@ Now we'll compare speeds.
 library(microbenchmark)
 library(stringi)
 
+
 # Test in which each element is shorter than the input string.
+
 test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
-)
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect)
+) -> mb
+
+print(mb)
 #> Unit: milliseconds
-#>  expr       min        lq     mean    median        uq       max neval
-#>   rfn 15.523595 16.225164 17.23116 16.689078 17.964045 23.986981   100
-#>   s_d 15.214702 16.336869 17.63126 16.826903 17.847623 27.623193   100
-#>   cpp  2.903553  3.351449  3.73067  3.584815  3.978435  5.320013   100
+#>            expr       min        lq      mean    median       uq       max
+#>    anagrams_pkg  2.957764  3.409829  4.078948  3.801082  4.48639  7.423282
+#>  stringdist_pkg 15.389827 16.377030 18.577019 17.426925 20.54258 30.622117
+#>          base_r 15.183233 16.304469 17.416938 16.612113 18.13074 26.212652
+#>  neval
+#>    100
+#>    100
+#>    100
+
+autoplot.microbenchmark(mb)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
 
 
 # Test in which each element is the same length as the input string.
+
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq        max
-#>   rfn 249.143841 264.177513 304.151393 319.738449 338.089919 377.248336
-#>   s_d  30.062288  31.299391  39.704185  37.209156  47.762130  51.626224
-#>   cpp   4.011165   4.444028   6.109578   5.432683   8.140196   8.383604
-#>  neval
-#>     25
-#>     25
-#>     25
+#>            expr        min         lq       mean     median         uq
+#>    anagrams_pkg   4.087133   4.569417   5.599958   4.780649   6.400926
+#>  stringdist_pkg  31.278478  34.425687  43.078357  43.818700  50.396274
+#>          base_r 226.697082 266.585187 306.877894 320.374032 343.670839
+#>         max neval
+#>    8.476718    25
+#>   55.042446    25
+#>  378.102585    25
+
+autoplot.microbenchmark(mb)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-6-2.png)
+
+``` r
 
 
 # Test in which each element is an anagram of the input string.
+
 test_vect <- rep("tacs", 100000)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
 #> Unit: milliseconds
-#>  expr       min         lq       mean     median        uq       max neval
-#>   rfn 554.62012 583.376076 622.027291 632.720996 654.97842 712.27013    25
-#>   s_d  20.40935  20.915622  29.273505  24.177871  37.53971  41.68178    25
-#>   cpp   6.19830   6.375018   8.299201   6.579702  12.06081  12.45613    25
+#>            expr       min         lq      mean    median        uq
+#>    anagrams_pkg   6.22285   7.859184  10.09603  11.90370  12.20088
+#>  stringdist_pkg  20.26465  24.614183  31.34636  33.67018  39.22784
+#>          base_r 529.31476 582.450234 616.83824 610.96686 666.67961
+#>        max neval
+#>   12.52686    25
+#>   41.83024    25
+#>  711.63826    25
+
+autoplot.microbenchmark(mb)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-6-3.png)
+
+``` r
 
 
 # Test in which each element is a string with length between two and six chars.
+
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
 #> Unit: milliseconds
-#>  expr       min         lq       mean     median         uq        max
-#>   rfn 86.847427 113.286132 127.161862 122.461839 144.911105 217.461613
-#>   s_d 20.001668  22.917895  30.476989  32.036125  37.662928  39.605131
-#>   cpp  3.259805   3.854613   4.822341   4.869514   5.587162   6.307721
-#>  neval
-#>     25
-#>     25
-#>     25
+#>            expr       min         lq       mean     median         uq
+#>    anagrams_pkg  3.425526   4.889977   5.393258   5.657923   5.980561
+#>  stringdist_pkg 21.244149  26.281611  32.153515  34.469034  36.891975
+#>          base_r 84.169148 108.293165 134.501019 141.014277 160.677025
+#>        max neval
+#>    6.53689    25
+#>   39.95555    25
+#>  168.68358    25
+
+autoplot.microbenchmark(mb)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-6-4.png)
+
+``` r
 
 
 # Test in which each element is a long string (nchar == 1000).
+
 test_str <- stringi::stri_rand_strings(1, 1000)
 test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
-  rfn = r_is_anagram(test_str, test_vect), 
-  s_d = sd_is_anagram(test_str, test_vect), 
-  cpp = is_anagram(test_str, test_vect), 
+  anagrams_pkg = is_anagram(test_str, test_vect), 
+  stringdist_pkg = sd_is_anagram(test_str, test_vect), 
+  base_r = r_is_anagram(test_str, test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
 #> Unit: milliseconds
-#>  expr        min         lq       mean     median         uq       max
-#>   rfn 5426.48767 5517.82890 5628.50316 5575.45672 5623.64851 7084.8195
-#>   s_d 2059.51150 2070.77517 2087.54561 2083.78355 2097.36705 2155.9608
-#>   cpp   66.45165   72.14306   79.90926   74.58059   88.21388  108.7775
-#>  neval
-#>     25
-#>     25
-#>     25
+#>            expr        min         lq       mean     median         uq
+#>    anagrams_pkg   67.89607   69.44413   74.34844   72.27528   80.50824
+#>  stringdist_pkg 2137.45272 2193.71352 2232.09559 2222.14421 2254.58533
+#>          base_r 5017.80263 5317.17637 5569.97980 5585.67973 5662.55602
+#>        max neval
+#>    85.3776    25
+#>  2439.8614    25
+#>  7100.0503    25
+
+autoplot.microbenchmark(mb)
 ```
+
+![](README_files/figure-markdown_github/unnamed-chunk-6-5.png)

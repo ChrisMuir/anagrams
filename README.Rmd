@@ -114,56 +114,82 @@ identical(
 
 Now we'll compare speeds.
 
-```{r}
+```{r message=FALSE, warning=FALSE, error=FALSE}
 library(microbenchmark)
 library(stringi)
 
+
 # Test in which each element is shorter than the input string.
+
 test_vect <- stringi::stri_rand_strings(100000, 3)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect)
-)
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect)
+) -> mb
+
+print(mb)
+
+autoplot.microbenchmark(mb)
 
 
 # Test in which each element is the same length as the input string.
+
 test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
+
+autoplot.microbenchmark(mb)
 
 
 # Test in which each element is an anagram of the input string.
+
 test_vect <- rep("tacs", 100000)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
+
+autoplot.microbenchmark(mb)
 
 
 # Test in which each element is a string with length between two and six chars.
+
 test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
-  rfn = r_is_anagram("cats", test_vect), 
-  s_d = sd_is_anagram("cats", test_vect), 
-  cpp = is_anagram("cats", test_vect), 
+  anagrams_pkg = is_anagram("cats", test_vect), 
+  stringdist_pkg = sd_is_anagram("cats", test_vect), 
+  base_r = r_is_anagram("cats", test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
+
+autoplot.microbenchmark(mb)
 
 
 # Test in which each element is a long string (nchar == 1000).
+
 test_str <- stringi::stri_rand_strings(1, 1000)
 test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
-  rfn = r_is_anagram(test_str, test_vect), 
-  s_d = sd_is_anagram(test_str, test_vect), 
-  cpp = is_anagram(test_str, test_vect), 
+  anagrams_pkg = is_anagram(test_str, test_vect), 
+  stringdist_pkg = sd_is_anagram(test_str, test_vect), 
+  base_r = r_is_anagram(test_str, test_vect), 
   times = 25
-)
+) -> mb
+
+print(mb)
+
+autoplot.microbenchmark(mb)
 ```
