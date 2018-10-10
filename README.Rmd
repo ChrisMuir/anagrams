@@ -143,8 +143,7 @@ test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
@@ -158,8 +157,7 @@ test_vect <- rep("tacs", 100000)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
@@ -173,8 +171,7 @@ test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
@@ -189,8 +186,7 @@ test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   anagrams_pkg = is_anagram(test_str, test_vect), 
   stringdist_pkg = sd_is_anagram(test_str, test_vect), 
-  base_r = r_is_anagram(test_str, test_vect), 
-  times = 25
+  base_r = r_is_anagram(test_str, test_vect)
 ) -> mb
 
 print(mb)

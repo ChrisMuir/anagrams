@@ -132,10 +132,10 @@ microbenchmark(
 
 print(mb)
 #> Unit: milliseconds
-#>            expr       min        lq      mean    median        uq       max neval
-#>    anagrams_pkg  3.100996  3.468451  3.868257  3.723464  4.158105  5.544518   100
-#>  stringdist_pkg 15.018863 15.784736 16.651755 16.271574 16.939462 24.624208   100
-#>          base_r 15.097497 15.615902 16.911802 16.227311 16.908727 31.820793   100
+#>            expr       min        lq      mean    median        uq      max neval
+#>    anagrams_pkg  2.881423  3.525425  4.021074  3.844908  4.266404 11.03156   100
+#>  stringdist_pkg 15.315525 15.921312 17.256385 16.312648 17.405777 31.04395   100
+#>          base_r 15.051156 16.082214 17.266148 16.510351 17.604196 26.37956   100
 
 autoplot.microbenchmark(mb)
 ```
@@ -151,16 +151,15 @@ test_vect <- stringi::stri_rand_strings(100000, 4)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
 #> Unit: milliseconds
-#>            expr       min         lq       mean     median         uq        max neval
-#>    anagrams_pkg   4.14881   5.391084   7.021752   6.741645   9.161284   9.275218    25
-#>  stringdist_pkg  30.69577  31.381148  39.860443  39.009806  46.984034  57.092259    25
-#>          base_r 237.90480 255.272808 290.234094 274.866043 327.326344 356.681086    25
+#>            expr        min         lq       mean    median         uq        max neval
+#>    anagrams_pkg   3.930946   4.418756   6.403174   5.33026   8.961391   9.459983   100
+#>  stringdist_pkg  30.798884  32.814780  41.363030  41.46304  51.061384  60.805754   100
+#>          base_r 230.129447 249.446249 290.188437 274.38873 325.527552 401.477623   100
 
 autoplot.microbenchmark(mb)
 ```
@@ -176,16 +175,15 @@ test_vect <- rep("tacs", 100000)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
 #> Unit: milliseconds
-#>            expr        min         lq      mean     median        uq       max neval
-#>    anagrams_pkg   6.031186   6.108313   8.51613   6.577749  11.81450  13.53926    25
-#>  stringdist_pkg  20.083868  20.521320  28.48446  23.701445  39.59214  41.03456    25
-#>          base_r 508.361398 545.118752 594.11975 608.963430 625.35459 689.77246    25
+#>            expr        min         lq       mean     median        uq       max neval
+#>    anagrams_pkg   6.032617   6.174131   8.672862   6.460368  12.79368  13.60459   100
+#>  stringdist_pkg  20.167271  21.144735  28.287279  23.469102  36.77468  41.28809   100
+#>          base_r 516.538887 542.028019 590.663058 604.686332 623.25734 700.31462   100
 
 autoplot.microbenchmark(mb)
 ```
@@ -201,16 +199,15 @@ test_vect <- stringi::stri_rand_strings(100000, 2:6)
 microbenchmark(
   anagrams_pkg = is_anagram("cats", test_vect), 
   stringdist_pkg = sd_is_anagram("cats", test_vect), 
-  base_r = r_is_anagram("cats", test_vect), 
-  times = 25
+  base_r = r_is_anagram("cats", test_vect)
 ) -> mb
 
 print(mb)
 #> Unit: milliseconds
 #>            expr       min        lq       mean     median         uq        max neval
-#>    anagrams_pkg  3.015511  3.975234   5.301403   5.170354   6.839706   7.652389    25
-#>  stringdist_pkg 19.461361 21.731648  30.679704  31.180937  36.314394  40.047197    25
-#>          base_r 82.909623 93.059026 122.541916 125.979663 146.103838 188.736725    25
+#>    anagrams_pkg  2.944681  3.766089   5.270952   5.613658   6.524147   7.198479   100
+#>  stringdist_pkg 19.105867 23.138215  30.249420  31.577503  37.347316  39.049870   100
+#>          base_r 73.373744 93.263171 119.200591 119.970260 140.210453 208.282373   100
 
 autoplot.microbenchmark(mb)
 ```
@@ -227,16 +224,15 @@ test_vect <- stringi::stri_rand_strings(100000, 1000)
 microbenchmark(
   anagrams_pkg = is_anagram(test_str, test_vect), 
   stringdist_pkg = sd_is_anagram(test_str, test_vect), 
-  base_r = r_is_anagram(test_str, test_vect), 
-  times = 25
+  base_r = r_is_anagram(test_str, test_vect)
 ) -> mb
 
 print(mb)
 #> Unit: milliseconds
-#>            expr        min         lq       mean     median        uq        max neval
-#>    anagrams_pkg   69.80629   71.13075   77.00845   74.26053   79.6308   95.19816    25
-#>  stringdist_pkg 2082.33845 2105.74981 2118.05681 2113.41687 2129.8930 2155.05893    25
-#>          base_r 5233.31362 5304.26535 5406.09315 5360.12743 5406.0963 6732.25244    25
+#>            expr        min         lq       mean     median         uq       max neval
+#>    anagrams_pkg   69.79089   72.50462   82.09632   74.92934   89.44213  116.6318   100
+#>  stringdist_pkg 1959.91668 2004.75443 2025.03711 2018.05366 2036.10158 2187.0023   100
+#>          base_r 5030.08627 5139.72163 5205.26548 5191.46462 5225.21471 6732.3260   100
 
 autoplot.microbenchmark(mb)
 ```
